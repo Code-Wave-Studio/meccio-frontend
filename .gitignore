@@ -1,0 +1,28 @@
+# Secrets — never commit
+backend/.env
+frontend/.env
+frontend/.env.production
+
+# Frontend build / deps
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+
+# Runtime / logs
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+backend/storage/cache/*
+!backend/storage/cache/.gitkeep
+
+# Optional: keep uploads on Hostinger only (uncomment if you don't want images in Git)
+# backend/uploads/images/
+# backend/uploads/**
+# !backend/uploads/.htaccess
+# !backend/uploads/.gitkeep

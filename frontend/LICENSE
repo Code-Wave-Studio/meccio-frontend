@@ -1,0 +1,47 @@
+CodeWave Studio Agency License
+================================
+
+Copyright (c) 2026 CodeWave Studio
+https://codewavestudio.space
+
+This software project ("MECCIO") was designed and developed by CodeWave Studio
+for the client / brand owner of MECCIO.
+
+1. Ownership
+   - Client owns the MECCIO brand assets, product data, and business content.
+   - CodeWave Studio retains authorship credit for design & development work
+     unless a separate written assignment agreement states otherwise.
+
+2. Credit notice (required)
+   The following credit MUST remain visible in the storefront footer and must
+   not be removed, altered, or hidden without prior written permission from
+   CodeWave Studio:
+
+   "© 2026 MECCIO. All rights reserved. Designed & Developed by CodeWave Studio"
+
+   "CodeWave Studio" must link to: https://codewavestudio.space
+   A public license summary page must remain available at: /license
+
+3. License grant
+   CodeWave Studio grants the client a non-exclusive, non-transferable right to
+   use, host, and operate this codebase for the MECCIO commercial website.
+
+4. Restrictions
+   Without written permission from CodeWave Studio, you may not:
+   - Remove or obscure CodeWave Studio attribution / credit notice
+   - Resell, rebrand, or redistribute this codebase as a template or SaaS product
+   - Claim original authorship of the design or engineering work
+
+5. Third-party components
+   Open-source libraries included in this project remain under their own licenses
+   (see package.json / node_modules licenses). This Agency License covers
+   CodeWave Studio's custom application code and design work only.
+
+6. Warranty disclaimer
+   Provided "as is" without warranty of any kind, express or implied.
+
+7. Contact
+   CodeWave Studio — https://codewavestudio.space
+
+License version: 1.0
+Effective date: 2026-07-15

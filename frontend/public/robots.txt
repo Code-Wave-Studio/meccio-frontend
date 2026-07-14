@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://meccio.com/sitemap.xml
+
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /api/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
