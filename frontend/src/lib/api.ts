@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-/** Absolute API base. Local: `/api` (Vite proxy). Cloudflare Pages: full Hostinger URL. */
-const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const PROD_API = 'https://navajowhite-stingray-123815.hostingersite.com/backend/api';
+const PROD_UPLOADS = 'https://navajowhite-stingray-123815.hostingersite.com/backend/uploads';
 
-/** Hostinger uploads public base (optional). Used to rewrite localhost media URLs from the DB. */
-const UPLOAD_BASE = (import.meta.env.VITE_UPLOAD_URL || '').replace(/\/$/, '');
+/** Cloudflare / production Hostinger API */
+const API_BASE = (import.meta.env.VITE_API_URL || PROD_API).replace(/\/$/, '');
 
-const LOCAL_UPLOAD_PREFIXES = [
+/** Uploaded media base on Hostinger */
+const UPLOAD_BASE = (import.meta.env.VITE_UPLOAD_URL || PROD_UPLOADS).replace(/\/$/, '');
+
+/** Old DB paths (from local import) → rewrite to Hostinger uploads */
+const LEGACY_UPLOAD_PREFIXES = [
   'http://localhost/meccio/uploads',
   'http://localhost/meccio/backend/uploads',
   'http://127.0.0.1/meccio/uploads',
@@ -20,7 +24,7 @@ export function resolveMediaUrl(url?: string | null): string {
     return url;
   }
 
-  for (const prefix of LOCAL_UPLOAD_PREFIXES) {
+  for (const prefix of LEGACY_UPLOAD_PREFIXES) {
     if (url.startsWith(prefix)) {
       return UPLOAD_BASE + url.slice(prefix.length);
     }
