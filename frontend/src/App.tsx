@@ -46,7 +46,14 @@ const queryClient = new QueryClient({
 
 function CollectionRoute() {
   const { slug } = useParams();
-  return <ShopPage title={slug?.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Collection'} defaultFilters={{ collection: slug || '' }} />;
+  const title = slug?.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Collection';
+  return (
+    <ShopPage
+      title={title}
+      defaultFilters={{ collection: slug || '' }}
+      seoDescription={`Shop the ${title} at MECCIO — handcrafted luxury carpets and rugs curated for refined interiors.`}
+    />
+  );
 }
 
 function PageLoader() {

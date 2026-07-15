@@ -91,7 +91,11 @@ export default function AboutPage() {
 
   return (
     <>
-      <SEO title="About Us" description="Discover the MECCIO story - luxury carpets and rugs crafted by master artisans for discerning spaces worldwide." />
+      <SEO
+        title="About Us"
+        description="Discover the MECCIO story — luxury carpets and rugs crafted by master artisans for discerning spaces worldwide."
+        keywords="about MECCIO, artisan rugs, luxury carpet brand"
+      />
 
       <div className="relative h-[60vh] overflow-hidden">
         <img src={aboutHeroImage} alt="MECCIO craftsmanship" className="w-full h-full object-cover" />
@@ -182,7 +186,11 @@ export function TestimonialsPage() {
 
   return (
     <>
-      <SEO title="Testimonials" description="Read what interior designers, architects, and homeowners say about MECCIO luxury rugs." />
+      <SEO
+        title="Testimonials"
+        description="Read what interior designers, architects, and homeowners say about MECCIO luxury rugs."
+        keywords="MECCIO reviews, luxury rug testimonials, customer stories"
+      />
       <div className="container-luxury py-8 sm:py-12">
         <h1 className="luxury-heading text-3xl sm:text-4xl md:text-5xl mb-10 sm:mb-16 text-center">Client Stories</h1>
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">

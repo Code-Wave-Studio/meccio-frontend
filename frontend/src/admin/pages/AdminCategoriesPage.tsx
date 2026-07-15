@@ -104,7 +104,7 @@ export default function AdminCategoriesPage() {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs uppercase tracking-wider bg-[#1a1714] text-white"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] text-xs uppercase tracking-wider bg-[#1a1714] text-white w-full sm:w-auto"
         >
           <Plus size={14} /> Add Category
         </button>
@@ -113,59 +113,42 @@ export default function AdminCategoriesPage() {
       <div className="bg-white border border-[#e8e0d5]">
         {isLoading ? (
           <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#c4a962]" /></div>
+        ) : categories.length === 0 ? (
+          <p className="text-center text-[#9c8b7a] py-16 text-sm">No categories yet</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[640px]">
-              <thead>
-                <tr className="bg-[#faf8f5] text-[11px] uppercase tracking-wider text-[#9c8b7a]">
-                  <th className="text-left px-4 py-3 font-medium">Category</th>
-                  <th className="text-left px-4 py-3 font-medium">Slug</th>
-                  <th className="text-left px-4 py-3 font-medium">Order</th>
-                  <th className="text-left px-4 py-3 font-medium">Status</th>
-                  <th className="text-right px-4 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.length === 0 ? (
-                  <tr><td colSpan={5} className="px-4 py-10 text-center text-[#9c8b7a]">No categories yet</td></tr>
+          <div className="divide-y divide-[#efe7dc]">
+            {categories.map((c) => (
+              <div key={c.id} className="p-4 flex items-center gap-3">
+                {c.image ? (
+                  <img src={c.image} alt="" className="h-12 w-12 object-cover border border-[#e8e0d5] shrink-0" />
                 ) : (
-                  categories.map((c) => (
-                    <tr key={c.id} className="border-t border-[#efe7dc]">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          {c.image ? (
-                            <img src={c.image} alt="" className="h-10 w-10 object-cover border border-[#e8e0d5]" />
-                          ) : (
-                            <div className="h-10 w-10 bg-[#f5f0eb] border border-[#e8e0d5]" />
-                          )}
-                          <span className="font-medium">{c.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs text-[#9c8b7a]">{c.slug}</td>
-                      <td className="px-4 py-3">{c.sort_order ?? 0}</td>
-                      <td className="px-4 py-3">
-                        <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${c.is_active ? 'bg-green-50 text-green-800' : 'bg-[#f5f0eb] text-[#9c8b7a]'}`}>
-                          {c.is_active ? 'Active' : 'Hidden'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right whitespace-nowrap">
-                        <button type="button" onClick={() => openEdit(c)} className="p-2 text-[#9c8b7a] hover:text-[#c4a962]" aria-label="Edit">
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { if (confirm('Delete this category?')) deleteMutation.mutate(c.id); }}
-                          className="p-2 text-[#9c8b7a] hover:text-red-600"
-                          aria-label="Delete"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  <div className="h-12 w-12 bg-[#f5f0eb] border border-[#e8e0d5] shrink-0" />
                 )}
-              </tbody>
-            </table>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium truncate">{c.name}</p>
+                  <p className="text-[11px] text-[#9c8b7a] font-mono truncate">{c.slug}</p>
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-[#faf8f5]">Order {c.sort_order ?? 0}</span>
+                    <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 ${c.is_active ? 'bg-green-50 text-green-800' : 'bg-[#f5f0eb] text-[#9c8b7a]'}`}>
+                      {c.is_active ? 'Active' : 'Hidden'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex shrink-0">
+                  <button type="button" onClick={() => openEdit(c)} className="p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#9c8b7a] hover:text-[#c4a962]" aria-label="Edit">
+                    <Pencil size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { if (confirm('Delete this category?')) deleteMutation.mutate(c.id); }}
+                    className="p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#9c8b7a] hover:text-red-600"
+                    aria-label="Delete"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

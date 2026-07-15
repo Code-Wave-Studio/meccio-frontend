@@ -116,7 +116,7 @@ export default function AdminTestimonialsPage() {
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs uppercase tracking-wider bg-[#1a1714] text-white"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] text-xs uppercase tracking-wider bg-[#1a1714] text-white w-full sm:w-auto"
         >
           <Plus size={14} /> Add Testimonial
         </button>
@@ -125,60 +125,45 @@ export default function AdminTestimonialsPage() {
       <div className="bg-white border border-[#e8e0d5]">
         {isLoading ? (
           <div className="flex justify-center py-16"><Loader2 className="animate-spin text-[#c4a962]" /></div>
+        ) : testimonials.length === 0 ? (
+          <p className="text-center text-[#9c8b7a] py-16 text-sm px-4">No testimonials yet</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[720px]">
-              <thead>
-                <tr className="bg-[#faf8f5] text-[11px] uppercase tracking-wider text-[#9c8b7a]">
-                  <th className="text-left px-4 py-3 font-medium">Author</th>
-                  <th className="text-left px-4 py-3 font-medium">Content</th>
-                  <th className="text-left px-4 py-3 font-medium">Rating</th>
-                  <th className="text-left px-4 py-3 font-medium">Status</th>
-                  <th className="text-right px-4 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {testimonials.length === 0 ? (
-                  <tr><td colSpan={5} className="px-4 py-10 text-center text-[#9c8b7a]">No testimonials yet</td></tr>
-                ) : (
-                  testimonials.map((t) => (
-                    <tr key={t.id} className="border-t border-[#efe7dc]">
-                      <td className="px-4 py-3">
-                        <p className="font-medium">{t.author_name}</p>
-                        <p className="text-[11px] text-[#9c8b7a]">
-                          {[t.author_title, t.author_location].filter(Boolean).join(' · ')}
-                        </p>
-                      </td>
-                      <td className="px-4 py-3 max-w-xs">
-                        <p className="line-clamp-2 text-[#6f655c]">{t.content}</p>
-                      </td>
-                      <td className="px-4 py-3">{t.rating ?? 5}/5</td>
-                      <td className="px-4 py-3 space-x-1">
-                        <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${t.is_active ? 'bg-green-50 text-green-800' : 'bg-[#f5f0eb] text-[#9c8b7a]'}`}>
-                          {t.is_active ? 'Active' : 'Hidden'}
-                        </span>
-                        {!!t.is_featured && (
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-1 bg-[#faf8f5] text-[#c4a962]">Featured</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-right whitespace-nowrap">
-                        <button type="button" onClick={() => openEdit(t)} className="p-2 text-[#9c8b7a] hover:text-[#c4a962]" aria-label="Edit">
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { if (confirm('Delete this testimonial?')) deleteMutation.mutate(t.id); }}
-                          className="p-2 text-[#9c8b7a] hover:text-red-600"
-                          aria-label="Delete"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className="divide-y divide-[#efe7dc]">
+            {testimonials.map((t) => (
+              <div key={t.id} className="p-4 sm:p-5 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-medium">{t.author_name}</p>
+                    <p className="text-[11px] text-[#9c8b7a]">
+                      {[t.author_title, t.author_location].filter(Boolean).join(' · ') || '—'}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      <span className="text-[10px] uppercase tracking-wider px-2 py-1 bg-[#faf8f5]">{t.rating ?? 5}/5</span>
+                      <span className={`text-[10px] uppercase tracking-wider px-2 py-1 ${t.is_active ? 'bg-green-50 text-green-800' : 'bg-[#f5f0eb] text-[#9c8b7a]'}`}>
+                        {t.is_active ? 'Active' : 'Hidden'}
+                      </span>
+                      {!!t.is_featured && (
+                        <span className="text-[10px] uppercase tracking-wider px-2 py-1 bg-[#faf8f5] text-[#c4a962]">Featured</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-1">
+                    <button type="button" onClick={() => openEdit(t)} className="p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#9c8b7a] hover:text-[#c4a962]" aria-label="Edit">
+                      <Pencil size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { if (confirm('Delete this testimonial?')) deleteMutation.mutate(t.id); }}
+                      className="p-2.5 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[#9c8b7a] hover:text-red-600"
+                      aria-label="Delete"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-sm text-[#6f655c] leading-relaxed whitespace-pre-wrap break-words">{t.content}</p>
+              </div>
+            ))}
           </div>
         )}
       </div>

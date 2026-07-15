@@ -2,12 +2,15 @@ User-agent: *
 Allow: /
 
 Sitemap: https://meccio.com/sitemap.xml
+Sitemap: https://navajowhite-stingray-123815.hostingersite.com/backend/api/seo/sitemap
 
 Disallow: /admin/
 Disallow: /backend/
 Disallow: /api/
 Disallow: /checkout
 Disallow: /cart
+Disallow: /wishlist
 Disallow: /dashboard
 Disallow: /login
 Disallow: /register
+Disallow: /forgot-password

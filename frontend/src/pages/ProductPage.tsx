@@ -126,6 +126,7 @@ export default function ProductPage() {
   if (!product) {
     return (
       <div className="container-luxury py-32 text-center">
+        <SEO title="Product Not Found" noindex />
         <h1 className="font-display text-3xl mb-4">Product Not Found</h1>
         <Link to="/shop" className="btn-primary">Continue Shopping</Link>
       </div>
@@ -174,15 +175,19 @@ export default function ProductPage() {
   return (
     <>
       <SEO
-        title={product.name}
-        description={product.short_description || product.description?.slice(0, 160)}
+        title={product.meta_title || product.name}
+        description={product.meta_description || product.short_description || product.description?.slice(0, 160)}
         image={images[0]?.url}
         url={`/product/${product.slug}`}
         type="product"
+        keywords={`${product.name}, luxury rug, ${product.material || 'handcrafted'}, MECCIO`}
       />
-      <ProductSchema product={{ ...product, primary_image: images[0]?.url }} />
+      <ProductSchema product={{ ...product, primary_image: images[0]?.url, stock_quantity: availableStock }} />
       <BreadcrumbSchema items={[
         { name: 'Shop', url: '/shop' },
+        ...(product.categories?.[0]
+          ? [{ name: product.categories[0].name, url: `/shop?category=${product.categories[0].slug}` }]
+          : []),
         { name: product.name, url: `/product/${product.slug}` },
       ]} />
 
@@ -515,18 +520,12 @@ export default function ProductPage() {
         </section>
 
         <section className="mt-16 md:mt-24">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <p className="luxury-subheading mb-2">Customer Notes</p>
-              <h2 className="font-display text-3xl text-charcoal">Reviews</h2>
-            </div>
-            {product.rating_count > 0 && (
-              <div className="flex items-center gap-2 text-sm text-stone">
-                <Star size={16} className="fill-gold text-gold" />
-                {product.rating_avg} average from {product.rating_count} reviews
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <p className="luxury-subheading mb-2">Customer Notes</p>
+                <h2 className="font-display text-3xl text-charcoal">Reviews</h2>
               </div>
-            )}
-          </div>
+            </div>
 
           {product.reviews && product.reviews.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-4 mb-10">

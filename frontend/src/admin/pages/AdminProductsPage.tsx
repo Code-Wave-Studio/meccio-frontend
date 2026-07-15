@@ -26,6 +26,8 @@ type ProductRow = {
   etsy_enabled?: number;
   etsy_url?: string | null;
   short_description?: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
   created_at: string;
   primary_image?: string | null;
   images?: Array<{ url: string; alt_text?: string; is_primary?: number | boolean }>;
@@ -40,6 +42,8 @@ const emptyForm = {
   price_inr: '',
   stock_quantity: '10',
   short_description: '',
+  meta_title: '',
+  meta_description: '',
   is_active: true,
   is_featured: false,
   etsy_enabled: false,
@@ -113,6 +117,8 @@ export default function AdminProductsPage() {
       price_inr: p.price_inr != null ? String(p.price_inr) : '',
       stock_quantity: String(p.stock_quantity ?? 0),
       short_description: p.short_description || '',
+      meta_title: p.meta_title || '',
+      meta_description: p.meta_description || '',
       is_active: !!p.is_active,
       is_featured: !!p.is_featured,
       etsy_enabled: !!p.etsy_enabled,
@@ -134,6 +140,8 @@ export default function AdminProductsPage() {
         price_inr: full.price_inr != null ? String(full.price_inr) : '',
         stock_quantity: String(full.stock_quantity ?? 0),
         short_description: full.short_description || '',
+        meta_title: full.meta_title || '',
+        meta_description: full.meta_description || '',
         is_active: !!full.is_active,
         is_featured: !!full.is_featured,
         etsy_enabled: !!full.etsy_enabled,
@@ -154,6 +162,8 @@ export default function AdminProductsPage() {
     price_inr: form.price_inr === '' ? null : Number(form.price_inr) || 0,
     stock_quantity: Number(form.stock_quantity) || 0,
     short_description: form.short_description,
+    meta_title: form.meta_title.trim() || null,
+    meta_description: form.meta_description.trim() || null,
     is_active: form.is_active ? 1 : 0,
     is_featured: form.is_featured ? 1 : 0,
     etsy_enabled: form.etsy_enabled ? 1 : 0,
@@ -545,6 +555,29 @@ export default function AdminProductsPage() {
                   onChange={(e) => setForm({ ...form, short_description: e.target.value })}
                 />
               </AdminField>
+
+              <div className="space-y-3 border border-[#e8e0d5] bg-[#faf8f5] p-4">
+                <p className="text-[11px] uppercase tracking-wider text-[#9c8b7a] font-medium">SEO</p>
+                <AdminField label="Meta title (optional)">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={form.meta_title}
+                    onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                    placeholder="Custom Google title"
+                    maxLength={70}
+                  />
+                </AdminField>
+                <AdminField label="Meta description (optional)">
+                  <textarea
+                    className={`${ADMIN_INPUT} resize-none`}
+                    rows={2}
+                    value={form.meta_description}
+                    onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                    placeholder="Custom Google description"
+                    maxLength={160}
+                  />
+                </AdminField>
+              </div>
 
               <div className="flex flex-wrap gap-4">
                 <label className="flex items-center gap-2 text-sm min-h-[44px]">

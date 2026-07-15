@@ -2,13 +2,14 @@ import SEO from '@/components/SEO';
 
 interface StaticPageProps {
   title: string;
+  description: string;
   children: React.ReactNode;
 }
 
-function StaticPage({ title, children }: StaticPageProps) {
+function StaticPage({ title, description, children }: StaticPageProps) {
   return (
     <>
-      <SEO title={title} />
+      <SEO title={title} description={description} />
       <div className="container-luxury py-8 sm:py-12 max-w-3xl">
         <h1 className="luxury-heading text-3xl sm:text-4xl mb-6 sm:mb-8">{title}</h1>
         <div className="prose prose-stone max-w-none space-y-4 text-stone leading-relaxed">
@@ -21,7 +22,10 @@ function StaticPage({ title, children }: StaticPageProps) {
 
 export function PrivacyPage() {
   return (
-    <StaticPage title="Privacy Policy">
+    <StaticPage
+      title="Privacy Policy"
+      description="How MECCIO collects, uses, and protects your personal information when you shop luxury rugs online."
+    >
       <p>Last updated: July 2026</p>
       <p>MECCIO ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website or make a purchase.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Information We Collect</h2>
@@ -38,7 +42,10 @@ export function PrivacyPage() {
 
 export function TermsPage() {
   return (
-    <StaticPage title="Terms of Service">
+    <StaticPage
+      title="Terms of Service"
+      description="MECCIO terms of service covering orders, payments, pricing, and use of our luxury rug website."
+    >
       <p>Last updated: July 2026</p>
       <p>By accessing and using the MECCIO website, you agree to these Terms of Service.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Products & Pricing</h2>
@@ -53,7 +60,10 @@ export function TermsPage() {
 
 export function LicensePage() {
   return (
-    <StaticPage title="License & Attribution">
+    <StaticPage
+      title="License & Attribution"
+      description="License and attribution details for the MECCIO website designed and developed by CodeWave Studio."
+    >
       <p>Last updated: July 2026</p>
       <p>
         This MECCIO website was designed and developed by{' '}

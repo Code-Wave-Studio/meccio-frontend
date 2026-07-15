@@ -16,7 +16,11 @@ export function CollectionsPage() {
 
   return (
     <>
-      <SEO title="Collections" description="Explore MECCIO luxury rug collections - Luxury, Modern, Persian, Handmade, Wool, and Silk." />
+      <SEO
+        title="Collections"
+        description="Explore MECCIO luxury rug collections — Luxury, Modern, Persian, Handmade, Wool, and Silk handcrafted carpets."
+        keywords="rug collections, Persian rugs, silk rugs, wool rugs, luxury carpets, MECCIO"
+      />
       <div className="container-luxury py-8 sm:py-12">
         <h1 className="luxury-heading text-3xl sm:text-4xl md:text-5xl mb-4">Our Collections</h1>
         <p className="text-stone text-sm sm:text-base max-w-2xl mb-10 sm:mb-16">Each collection tells a unique story of craftsmanship, material, and design philosophy.</p>

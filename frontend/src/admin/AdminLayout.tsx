@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
+import { Helmet } from 'react-helmet-async';
 
 const NAV = [
   { to: '/admin', end: true, label: 'Dashboard', icon: LayoutDashboard },
@@ -92,6 +93,10 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-dvh bg-[#f5f0eb] text-[#2c2825]">
+      <Helmet>
+        <title>Admin | MECCIO</title>
+        <meta name="robots" content="noindex,nofollow" />
+      </Helmet>
       {/* Mobile top bar */}
       <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between gap-3 px-3 sm:px-4 py-3 bg-[#1a1714] text-[#faf8f5] border-b border-[#2c2825]/80">
         <button
@@ -202,8 +207,8 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      <main className="lg:ml-[260px] xl:ml-[280px] min-h-dvh">
-        <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-5 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+      <main className="lg:ml-[260px] xl:ml-[280px] min-h-dvh min-w-0 overflow-x-hidden">
+        <div className="mx-auto w-full max-w-[1400px] px-3 sm:px-5 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 pb-[max(1.25rem,env(safe-area-inset-bottom))] min-w-0">
           <Outlet />
         </div>
       </main>

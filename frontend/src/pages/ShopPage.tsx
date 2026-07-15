@@ -289,7 +289,8 @@ export default function ShopPage({
     <>
       <SEO
         title={title}
-        description={seoDescription || `Browse our ${title.toLowerCase()}. Premium luxury carpets and rugs.`}
+        description={seoDescription || `Browse our ${title.toLowerCase()}. Premium luxury carpets and rugs handcrafted for refined interiors worldwide.`}
+        keywords={`${title}, luxury rugs, carpets, MECCIO, handcrafted`}
       />
 
       <div className="bg-gradient-to-b from-ivory via-white to-white">

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SupportLayout from '@/components/SupportLayout';
+import { FaqSchema } from '@/components/SEO';
 import { contentApi } from '@/lib/api';
 import type { FAQ } from '@/types';
 
@@ -84,6 +85,7 @@ export default function FAQPage() {
       subtitle={pageMeta.subtitle ?? 'Answers about orders, materials, care, shipping, and our bespoke rug services.'}
       seoDescription="Frequently asked questions about MECCIO luxury rugs, shipping, returns, and care."
     >
+      <FaqSchema faqs={filtered.map((f) => ({ question: f.question, answer: f.answer }))} />
       <div className="space-y-6 sm:space-y-8">
         <div className="flex flex-col gap-4">
           <div className="relative flex-1">

@@ -213,6 +213,8 @@ export const adminApi = {
   },
   reviews: {
     list: (params?: Record<string, string>) => api.get('/admin/reviews', { params }),
+    create: (data: Record<string, unknown>) => api.post('/admin/reviews', data),
+    update: (id: number, data: Record<string, unknown>) => api.put(`/admin/reviews/${id}`, data),
     approve: (id: number) => api.put(`/admin/reviews/${id}/approve`),
     reject: (id: number) => api.put(`/admin/reviews/${id}/reject`),
     delete: (id: number) => api.delete(`/admin/reviews/${id}`),

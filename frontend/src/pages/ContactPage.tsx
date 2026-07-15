@@ -20,7 +20,11 @@ export default function ContactPage() {
 
   return (
     <>
-      <SEO title="Contact Us" description="Get in touch with MECCIO for luxury rug inquiries, custom orders, and design consultations." />
+      <SEO
+        title="Contact Us"
+        description="Get in touch with MECCIO for luxury rug inquiries, custom orders, and design consultations."
+        keywords="contact MECCIO, custom rug inquiry, luxury rug support"
+      />
       <div className="container-luxury py-8 sm:py-12">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           <div>

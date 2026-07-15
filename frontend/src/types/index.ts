@@ -17,6 +17,8 @@ export interface Product {
   name: string;
   short_description?: string;
   description?: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
   brand?: string;
   material?: string;
   color?: string;

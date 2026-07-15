@@ -141,7 +141,8 @@ export default function CustomRugsPage() {
     <>
       <SEO
         title="Custom Rugs"
-        description="Commission bespoke luxury rugs tailored to your exact specifications. Custom sizes, colors, and patterns."
+        description="Commission bespoke luxury rugs tailored to your exact specifications. Custom sizes, colors, and patterns by MECCIO artisans."
+        keywords="custom rugs, bespoke carpets, made to order rugs, MECCIO"
       />
 
       <section className="relative min-h-[50vh] md:min-h-[55vh] flex items-end overflow-hidden">

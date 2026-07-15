@@ -45,7 +45,7 @@ export default function HomePage() {
 
   return (
     <div className="w-full max-w-full overflow-x-hidden">
-      <SEO />
+      <SEO includeSiteSchema />
 
       <HomeHero />
 
