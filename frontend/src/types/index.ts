@@ -110,9 +110,11 @@ export interface Cart {
 export interface Order {
   id: number;
   order_number: string;
+  invoice_number?: string | null;
   status: string;
   payment_status: string;
   payment_method?: string;
+  razorpay_payment_id?: string | null;
   subtotal: number;
   discount_amount: number;
   tax_amount: number;

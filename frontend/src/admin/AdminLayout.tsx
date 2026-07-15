@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
+  CreditCard,
   LayoutDashboard,
   Package,
   ShoppingBag,
@@ -30,6 +31,7 @@ const NAV = [
   { to: '/admin', end: true, label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+  { to: '/admin/payments', label: 'Payments', icon: CreditCard },
   { to: '/admin/customers', label: 'Customers', icon: Users },
   { to: '/admin/coupons', label: 'Coupons', icon: Tag },
   { to: '/admin/reviews', label: 'Reviews', icon: Star },

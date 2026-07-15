@@ -60,7 +60,7 @@ type FooterColumns = {
   legal: FooterLink[];
 };
 
-type TabId = 'general' | 'header' | 'footer' | 'product' | 'custom' | 'about' | 'shop';
+type TabId = 'general' | 'header' | 'footer' | 'product' | 'custom' | 'about' | 'shop' | 'invoice';
 
 const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: 'general', label: 'General', hint: 'Brand & contact' },
@@ -70,7 +70,25 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: 'about', label: 'About', hint: 'Craftsmanship' },
   { id: 'custom', label: 'Custom Form', hint: 'Custom rugs fields' },
   { id: 'product', label: 'Product', hint: 'Trust badges' },
+  { id: 'invoice', label: 'Invoice', hint: 'Company & tax details' },
 ];
+
+const DEFAULT_INVOICE = {
+  invoice_company_name: 'MECCIO',
+  invoice_legal_name: 'MECCIO',
+  invoice_address: '',
+  invoice_city: '',
+  invoice_state: '',
+  invoice_postal_code: '',
+  invoice_country: 'India',
+  invoice_email: '',
+  invoice_phone: '',
+  invoice_gstin: '',
+  invoice_pan: '',
+  invoice_prefix: 'INV',
+  invoice_footer_note: 'Thank you for shopping with MECCIO. This is a computer-generated invoice.',
+  invoice_bank_details: '',
+};
 
 const DEFAULT_ABOUT_CRAFT = {
   eyebrow: 'Craftsmanship',
@@ -176,6 +194,7 @@ export default function AdminSettingsPage() {
   const [customFields, setCustomFields] = useState<CustomRugFormField[]>(DEFAULT_CUSTOM_RUG_FORM_FIELDS);
   const [aboutCraft, setAboutCraft] = useState(DEFAULT_ABOUT_CRAFT);
   const [shopFilters, setShopFilters] = useState<ShopFiltersConfig>(DEFAULT_SHOP_FILTERS);
+  const [invoice, setInvoice] = useState(DEFAULT_INVOICE);
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['admin', 'settings'],
@@ -260,6 +279,23 @@ export default function AdminSettingsPage() {
     setShopFilters(
       normalizeShopFilters(parseSettingJson(settings.shop_filters, DEFAULT_SHOP_FILTERS)),
     );
+
+    setInvoice({
+      invoice_company_name: settings.invoice_company_name || DEFAULT_INVOICE.invoice_company_name,
+      invoice_legal_name: settings.invoice_legal_name || DEFAULT_INVOICE.invoice_legal_name,
+      invoice_address: settings.invoice_address || '',
+      invoice_city: settings.invoice_city || '',
+      invoice_state: settings.invoice_state || '',
+      invoice_postal_code: settings.invoice_postal_code || '',
+      invoice_country: settings.invoice_country || DEFAULT_INVOICE.invoice_country,
+      invoice_email: settings.invoice_email || '',
+      invoice_phone: settings.invoice_phone || '',
+      invoice_gstin: settings.invoice_gstin || '',
+      invoice_pan: settings.invoice_pan || '',
+      invoice_prefix: settings.invoice_prefix || DEFAULT_INVOICE.invoice_prefix,
+      invoice_footer_note: settings.invoice_footer_note || DEFAULT_INVOICE.invoice_footer_note,
+      invoice_bank_details: settings.invoice_bank_details || '',
+    });
   }, [settings]);
 
   const saveMutation = useMutation({
@@ -294,6 +330,7 @@ export default function AdminSettingsPage() {
         })),
         about_craftsmanship: aboutCraft,
         shop_filters: shopFilters,
+        ...invoice,
       });
     },
     onSuccess: () => {
@@ -979,6 +1016,121 @@ export default function AdminSettingsPage() {
                 </AdminCard>
               ))}
             </AdminRepeatableSection>
+          </div>
+        )}
+
+        {tab === 'invoice' && (
+          <div className="space-y-5">
+            <Panel
+              title="Company details on invoices"
+              description="These details appear on customer invoices (email + dashboard). Only invoice fields — nothing else."
+            >
+              <div className="grid sm:grid-cols-2 gap-3">
+                <AdminField label="Company / brand name">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_company_name}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_company_name: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Legal business name">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_legal_name}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_legal_name: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Invoice number prefix">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_prefix}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_prefix: e.target.value })}
+                    placeholder="INV"
+                  />
+                </AdminField>
+                <AdminField label="GSTIN">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_gstin}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_gstin: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="PAN">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_pan}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_pan: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Invoice email">
+                  <input
+                    className={ADMIN_INPUT}
+                    type="email"
+                    value={invoice.invoice_email}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_email: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Invoice phone">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_phone}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_phone: e.target.value })}
+                  />
+                </AdminField>
+              </div>
+              <AdminField label="Street address">
+                <textarea
+                  className={cn(ADMIN_INPUT, 'min-h-[72px]')}
+                  value={invoice.invoice_address}
+                  onChange={(e) => setInvoice({ ...invoice, invoice_address: e.target.value })}
+                />
+              </AdminField>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <AdminField label="City">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_city}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_city: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="State">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_state}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_state: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Postal code">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_postal_code}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_postal_code: e.target.value })}
+                  />
+                </AdminField>
+                <AdminField label="Country">
+                  <input
+                    className={ADMIN_INPUT}
+                    value={invoice.invoice_country}
+                    onChange={(e) => setInvoice({ ...invoice, invoice_country: e.target.value })}
+                  />
+                </AdminField>
+              </div>
+              <AdminField label="Bank details (optional)">
+                <textarea
+                  className={cn(ADMIN_INPUT, 'min-h-[88px]')}
+                  value={invoice.invoice_bank_details}
+                  onChange={(e) => setInvoice({ ...invoice, invoice_bank_details: e.target.value })}
+                  placeholder="Bank name, account no., IFSC…"
+                />
+              </AdminField>
+              <AdminField label="Footer note">
+                <textarea
+                  className={cn(ADMIN_INPUT, 'min-h-[72px]')}
+                  value={invoice.invoice_footer_note}
+                  onChange={(e) => setInvoice({ ...invoice, invoice_footer_note: e.target.value })}
+                />
+              </AdminField>
+            </Panel>
           </div>
         )}
 

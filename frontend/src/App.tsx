@@ -24,6 +24,7 @@ const ContactPage = lazy(() => import('@/pages/ContactPage'));
 const AdminDashboardPage = lazy(() => import('@/admin/pages/AdminDashboardPage'));
 const AdminProductsPage = lazy(() => import('@/admin/pages/AdminProductsPage'));
 const AdminOrdersPage = lazy(() => import('@/admin/pages/AdminOrdersPage'));
+const AdminPaymentsPage = lazy(() => import('@/admin/pages/AdminPaymentsPage'));
 const AdminCustomersPage = lazy(() => import('@/admin/pages/AdminCustomersPage'));
 const AdminCouponsPage = lazy(() => import('@/admin/pages/AdminCouponsPage'));
 const AdminReviewsPage = lazy(() => import('@/admin/pages/AdminReviewsPage'));
@@ -87,6 +88,7 @@ export default function App() {
                     <Route index element={<AdminDashboardPage />} />
                     <Route path="products" element={<AdminProductsPage />} />
                     <Route path="orders" element={<AdminOrdersPage />} />
+                    <Route path="payments" element={<AdminPaymentsPage />} />
                     <Route path="customers" element={<AdminCustomersPage />} />
                     <Route path="coupons" element={<AdminCouponsPage />} />
                     <Route path="reviews" element={<AdminReviewsPage />} />

@@ -17,7 +17,7 @@ import {
 import SEO from '@/components/SEO';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { addressApi, orderApi, paymentApi } from '@/lib/api';
+import { addressApi, paymentApi } from '@/lib/api';
 import { useCurrency } from '@/context/CurrencyContext';
 import { COUNTRIES } from '@/lib/countries';
 import { cn } from '@/lib/utils';
@@ -136,7 +136,7 @@ export default function CheckoutPage() {
         phone: data.phone,
       };
 
-      const orderRes = await orderApi.create({
+      const paymentRes = await paymentApi.prepare({
         shipping_address: shippingAddress,
         billing_address: shippingAddress,
         coupon_code: couponCode || undefined,
@@ -144,10 +144,13 @@ export default function CheckoutPage() {
         currency,
       });
 
-      const { order_id, order_number } = orderRes.data.data;
-
-      const paymentRes = await paymentApi.createRazorpay(order_id);
-      const { razorpay_order_id, amount, currency: payCurrency, key_id } = paymentRes.data.data;
+      const {
+        checkout_token,
+        razorpay_order_id,
+        amount,
+        currency: payCurrency,
+        key_id,
+      } = paymentRes.data.data;
 
       if (typeof window.Razorpay !== 'undefined') {
         const siteBase = (
@@ -160,18 +163,31 @@ export default function CheckoutPage() {
           amount,
           currency: payCurrency,
           name: 'MECCIO',
-          description: `Luxury Carpets & Rugs · Order ${order_number}`,
+          description: 'Luxury Carpets & Rugs · Secure checkout',
           image: brandLogo,
           order_id: razorpay_order_id,
           handler: async (response: Record<string, string>) => {
-            await paymentApi.verify({
-              order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-            await refreshCart();
-            navigate(`/order-tracking?order=${order_number}&success=1`);
+            try {
+              const verifyRes = await paymentApi.verify({
+                checkout_token,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+              });
+              const orderNumber = verifyRes.data?.data?.order_number as string;
+              await refreshCart();
+              toast.success('Payment successful — order confirmed');
+              navigate(`/order-tracking?order=${orderNumber}&success=1`);
+            } catch {
+              toast.error('Payment received but confirmation failed. Contact support with your payment ID.');
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              void paymentApi.cancel(checkout_token).catch(() => undefined);
+              toast('Payment cancelled — no order was created');
+              setLoading(false);
+            },
           },
           prefill: {
             name: `${data.first_name} ${data.last_name}`,
@@ -181,7 +197,7 @@ export default function CheckoutPage() {
           notes: {
             company: 'MECCIO',
             website: siteBase,
-            order_number,
+            checkout_token,
           },
           theme: {
             color: '#C4A962',
@@ -189,14 +205,16 @@ export default function CheckoutPage() {
         });
         rzp.open();
       } else {
-        await paymentApi.verify({
-          order_id,
+        const verifyRes = await paymentApi.verify({
+          checkout_token,
           razorpay_payment_id: 'demo_payment',
           razorpay_order_id,
           razorpay_signature: 'demo_sig',
         });
+        const orderNumber = verifyRes.data?.data?.order_number as string;
         await refreshCart();
-        navigate(`/order-tracking?order=${order_number}&success=1`);
+        toast.success('Payment successful — order confirmed');
+        navigate(`/order-tracking?order=${orderNumber}&success=1`);
       }
     } catch {
       toast.error('Checkout failed. Please try again.');

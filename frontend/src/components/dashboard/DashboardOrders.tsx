@@ -1,22 +1,46 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp, ExternalLink, Loader2, Package } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, FileText, Loader2, Package } from 'lucide-react';
+import InvoiceDocument, { type InvoiceData } from '@/components/InvoiceDocument';
 import { orderApi, resolveMediaUrl } from '@/lib/api';
 import { formatInr, formatUsd } from '@/lib/currency';
 import { ORDER_STATUS_STEPS, orderStatusClass, orderStatusLabel, paymentStatusClass } from '@/lib/orderStatus';
 import { cn, formatDate } from '@/lib/utils';
 import type { Order } from '@/types';
+import toast from 'react-hot-toast';
 
 function formatOrderTotal(total: number, currency?: string) {
   return currency === 'INR' ? formatInr(total) : formatUsd(total);
 }
 
 function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
+  const [showInvoice, setShowInvoice] = useState(false);
+
   const { data: order, isLoading } = useQuery({
     queryKey: ['order', orderNumber],
     queryFn: () => orderApi.get(orderNumber).then((r) => r.data.data as Order),
   });
+
+  const { data: invoice, isLoading: invoiceLoading, refetch: refetchInvoice } = useQuery({
+    queryKey: ['invoice', orderNumber],
+    queryFn: () => orderApi.invoice(orderNumber).then((r) => r.data.data as InvoiceData),
+    enabled: false,
+  });
+
+  const openInvoice = async () => {
+    if (order?.payment_status !== 'paid') {
+      toast.error('Invoice is available after successful payment');
+      return;
+    }
+    setShowInvoice(true);
+    try {
+      await refetchInvoice();
+    } catch {
+      toast.error('Could not load invoice');
+      setShowInvoice(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -32,19 +56,51 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
 
   return (
     <div className="border-t border-sand/40 bg-ivory/40 p-4 sm:p-5 md:p-6 space-y-5 sm:space-y-6">
-      <div className="flex flex-wrap gap-2">
-        <span className={`text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border ${orderStatusClass(order.status)}`}>
-          {orderStatusLabel(order.status)}
-        </span>
-        <span className={`text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border ${paymentStatusClass(order.payment_status)}`}>
-          Payment: {orderStatusLabel(order.payment_status)}
-        </span>
-        {order.payment_method && (
-          <span className="text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-sand/40 bg-white text-stone">
-            {order.payment_method}
+      <div className="flex flex-wrap gap-2 items-center justify-between">
+        <div className="flex flex-wrap gap-2">
+          <span className={`text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border ${orderStatusClass(order.status)}`}>
+            {orderStatusLabel(order.status)}
           </span>
+          <span className={`text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border ${paymentStatusClass(order.payment_status)}`}>
+            Payment: {orderStatusLabel(order.payment_status)}
+          </span>
+          {order.payment_method && (
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-sand/40 bg-white text-stone">
+              {order.payment_method}
+            </span>
+          )}
+          {order.invoice_number && (
+            <span className="text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-sand/40 bg-white text-stone">
+              {order.invoice_number}
+            </span>
+          )}
+        </div>
+        {order.payment_status === 'paid' && (
+          <button
+            type="button"
+            onClick={() => void openInvoice()}
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em] text-gold-dark hover:underline"
+          >
+            <FileText size={14} /> View Invoice
+          </button>
         )}
       </div>
+
+      {showInvoice && (
+        <div className="fixed inset-0 z-50 bg-charcoal/50 backdrop-blur-sm overflow-y-auto print:bg-white print:static print:inset-auto">
+          <div className="min-h-full flex items-start justify-center p-4 sm:p-8 print:p-0">
+            <div className="w-full max-w-3xl bg-ivory p-4 sm:p-6 shadow-xl print:shadow-none print:max-w-none print:p-0 print:bg-white">
+              {invoiceLoading || !invoice ? (
+                <div className="flex justify-center py-20">
+                  <Loader2 className="animate-spin text-gold" />
+                </div>
+              ) : (
+                <InvoiceDocument invoice={invoice} onClose={() => setShowInvoice(false)} />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
         {ORDER_STATUS_STEPS.map((step, index) => (

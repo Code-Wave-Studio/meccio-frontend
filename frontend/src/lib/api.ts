@@ -143,18 +143,21 @@ export const wishlistApi = {
   remove: (productId: number) => api.delete(`/wishlist/${productId}`),
 };
 
+// Payments
+export const paymentApi = {
+  prepare: (data: Record<string, unknown>) => api.post('/payments/razorpay/prepare', data),
+  cancel: (checkout_token: string) => api.post('/payments/razorpay/cancel', { checkout_token }),
+  createRazorpay: (order_id: number) => api.post('/payments/razorpay/create', { order_id }),
+  verify: (data: Record<string, unknown>) => api.post('/payments/razorpay/verify', data),
+};
+
 // Orders
 export const orderApi = {
   create: (data: Record<string, unknown>) => api.post('/orders', data),
   list: () => api.get('/orders'),
   get: (orderNumber: string) => api.get(`/orders/${orderNumber}`),
+  invoice: (orderNumber: string) => api.get(`/orders/${orderNumber}/invoice`),
   track: (order_number: string, email: string) => api.get('/orders/track', { params: { order_number, email } }),
-};
-
-// Payments
-export const paymentApi = {
-  createRazorpay: (order_id: number) => api.post('/payments/razorpay/create', { order_id }),
-  verify: (data: Record<string, unknown>) => api.post('/payments/razorpay/verify', data),
 };
 
 // Content
@@ -198,6 +201,10 @@ export const adminApi = {
     list: (params?: Record<string, string>) => api.get('/admin/orders', { params }),
     get: (id: number) => api.get(`/admin/orders/${id}`),
     updateStatus: (id: number, data: Record<string, unknown>) => api.put(`/admin/orders/${id}/status`, data),
+  },
+  payments: {
+    list: (params?: Record<string, string>) => api.get('/admin/payments', { params }),
+    get: (id: number) => api.get(`/admin/payments/${id}`),
   },
   customers: {
     list: (params?: Record<string, string>) => api.get('/admin/customers', { params }),
