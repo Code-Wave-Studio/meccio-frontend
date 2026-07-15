@@ -51,17 +51,17 @@ export default function FAQPage() {
     queryFn: () => contentApi.faqs().then((r) => r.data.data),
   });
 
-  const faqs = data?.faqs ?? (Array.isArray(data) ? data : []);
+  const faqs: FAQ[] = data?.faqs ?? (Array.isArray(data) ? data : []);
   const pageMeta = data?.meta ?? {};
 
   const categories = useMemo(() => {
-    const cats = [...new Set(faqs.map((f: FAQ) => f.category).filter(Boolean))] as string[];
+    const cats = [...new Set(faqs.map((f) => f.category).filter(Boolean))] as string[];
     return ['All', ...cats];
   }, [faqs]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return faqs.filter((faq: FAQ) => {
+    return faqs.filter((faq) => {
       const matchCat = category === 'All' || faq.category === category;
       const matchQ = !q || faq.question.toLowerCase().includes(q) || faq.answer.toLowerCase().includes(q);
       return matchCat && matchQ;
@@ -70,7 +70,7 @@ export default function FAQPage() {
 
   const grouped = useMemo(() => {
     if (category !== 'All') return { [category]: filtered };
-    return filtered.reduce((acc: Record<string, FAQ[]>, faq: FAQ) => {
+    return filtered.reduce((acc: Record<string, FAQ[]>, faq) => {
       const cat = faq.category || 'General';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(faq);
