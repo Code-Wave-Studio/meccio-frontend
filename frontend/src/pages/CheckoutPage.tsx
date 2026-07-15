@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
   CreditCard,
@@ -16,10 +17,11 @@ import {
 import SEO from '@/components/SEO';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { orderApi, paymentApi } from '@/lib/api';
+import { addressApi, orderApi, paymentApi } from '@/lib/api';
 import { useCurrency } from '@/context/CurrencyContext';
 import { COUNTRIES } from '@/lib/countries';
 import { cn } from '@/lib/utils';
+import type { SavedAddress } from '@/types';
 import toast from 'react-hot-toast';
 
 declare global {
@@ -53,7 +55,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<CheckoutForm>({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<CheckoutForm>({
     defaultValues: {
       first_name: user?.first_name || '',
       last_name: user?.last_name || '',
@@ -68,6 +70,45 @@ export default function CheckoutPage() {
       notes: '',
     },
   });
+
+  const { data: savedAddresses = [] } = useQuery({
+    queryKey: ['addresses'],
+    queryFn: () => addressApi.list().then((r) => r.data.data as SavedAddress[]),
+    enabled: !!user,
+  });
+
+  const [selectedAddressId, setSelectedAddressId] = useState<number | 'manual' | null>(null);
+  const [addressPrefillDone, setAddressPrefillDone] = useState(false);
+
+  useEffect(() => {
+    if (!user || addressPrefillDone || !savedAddresses.length) return;
+    const primary = savedAddresses.find((a) => a.is_default) || savedAddresses[0];
+    if (!primary) return;
+    setSelectedAddressId(primary.id);
+    setValue('first_name', primary.first_name || user.first_name || '');
+    setValue('last_name', primary.last_name || user.last_name || '');
+    setValue('phone', primary.phone || user.phone || '');
+    setValue('address_line1', primary.address_line1 || '');
+    setValue('address_line2', primary.address_line2 || '');
+    setValue('city', primary.city || '');
+    setValue('state', primary.state || '');
+    setValue('postal_code', primary.postal_code || '');
+    setValue('country', primary.country || (isIndia ? 'IN' : 'US'));
+    setAddressPrefillDone(true);
+  }, [user, savedAddresses, addressPrefillDone, setValue, isIndia]);
+
+  const applySavedAddress = (address: SavedAddress) => {
+    setSelectedAddressId(address.id);
+    setValue('first_name', address.first_name);
+    setValue('last_name', address.last_name);
+    setValue('phone', address.phone || user?.phone || '');
+    setValue('address_line1', address.address_line1);
+    setValue('address_line2', address.address_line2 || '');
+    setValue('city', address.city);
+    setValue('state', address.state || '');
+    setValue('postal_code', address.postal_code);
+    setValue('country', address.country);
+  };
 
   const country = watch('country');
   const subtotal = isIndia ? (cart?.subtotal_inr ?? 0) : (cart?.subtotal || 0);
@@ -109,12 +150,18 @@ export default function CheckoutPage() {
       const { razorpay_order_id, amount, currency: payCurrency, key_id } = paymentRes.data.data;
 
       if (typeof window.Razorpay !== 'undefined') {
+        const siteBase = (
+          import.meta.env.VITE_SITE_URL || window.location.origin
+        ).replace(/\/$/, '');
+        const brandLogo = `${window.location.origin}/icon.png`;
+
         const rzp = new window.Razorpay({
           key: key_id,
           amount,
           currency: payCurrency,
           name: 'MECCIO',
-          description: `Order ${order_number}`,
+          description: `Luxury Carpets & Rugs · Order ${order_number}`,
+          image: brandLogo,
           order_id: razorpay_order_id,
           handler: async (response: Record<string, string>) => {
             await paymentApi.verify({
@@ -126,8 +173,19 @@ export default function CheckoutPage() {
             await refreshCart();
             navigate(`/order-tracking?order=${order_number}&success=1`);
           },
-          prefill: { name: `${data.first_name} ${data.last_name}`, email: data.email, contact: data.phone },
-          theme: { color: '#2C2825' },
+          prefill: {
+            name: `${data.first_name} ${data.last_name}`,
+            email: data.email,
+            contact: data.phone,
+          },
+          notes: {
+            company: 'MECCIO',
+            website: siteBase,
+            order_number,
+          },
+          theme: {
+            color: '#C4A962',
+          },
         });
         rzp.open();
       } else {
@@ -261,6 +319,48 @@ export default function CheckoutPage() {
                 <MapPin size={18} className="text-gold-dark shrink-0" />
                 <h2 className="font-display text-xl sm:text-2xl">Shipping Address</h2>
               </div>
+
+              {user && savedAddresses.length > 0 && (
+                <div className="mb-5 space-y-2">
+                  <p className="text-[11px] uppercase tracking-[0.14em] text-stone mb-2">Saved addresses</p>
+                  <div className="grid gap-2">
+                    {savedAddresses.map((addr) => (
+                      <button
+                        key={addr.id}
+                        type="button"
+                        onClick={() => applySavedAddress(addr)}
+                        className={cn(
+                          'text-left border p-3 text-sm transition-colors',
+                          selectedAddressId === addr.id
+                            ? 'border-charcoal bg-ivory/60'
+                            : 'border-sand/40 hover:border-gold/60',
+                        )}
+                      >
+                        <span className="font-medium text-charcoal">
+                          {addr.label || 'Address'}
+                          {addr.is_default ? ' · Primary' : ''}
+                        </span>
+                        <span className="block text-stone text-xs mt-1">
+                          {addr.address_line1}, {addr.city} {addr.postal_code}
+                        </span>
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAddressId('manual')}
+                      className={cn(
+                        'text-left border p-3 text-sm transition-colors',
+                        selectedAddressId === 'manual'
+                          ? 'border-charcoal bg-ivory/60'
+                          : 'border-sand/40 hover:border-gold/60',
+                      )}
+                    >
+                      Enter a new address
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="grid gap-3 sm:gap-4">
                 <input {...register('address_line1', { required: true })} placeholder="Address Line 1 *" className="input-luxury" />
                 <input {...register('address_line2')} placeholder="Address Line 2 (Apartment, suite, etc.)" className="input-luxury" />

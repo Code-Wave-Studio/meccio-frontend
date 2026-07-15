@@ -18,6 +18,8 @@ type ProductRow = {
   sku: string;
   price: number;
   price_inr?: number | null;
+  compare_price?: number | null;
+  compare_price_inr?: number | null;
   stock_quantity: number;
   is_active: number;
   is_featured: number;
@@ -32,7 +34,9 @@ type ProductRow = {
 const emptyForm = {
   name: '',
   sku: '',
+  compare_price: '',
   price: '',
+  compare_price_inr: '',
   price_inr: '',
   stock_quantity: '10',
   short_description: '',
@@ -42,6 +46,13 @@ const emptyForm = {
   etsy_url: '',
   images: [] as ProductImageItem[],
 };
+
+function calcDiscount(mrp: string, selling: string) {
+  const compare = Number(mrp);
+  const price = Number(selling);
+  if (!compare || !price || compare <= price) return 0;
+  return Math.round(((compare - price) / compare) * 100);
+}
 
 function mapImages(raw?: ProductRow['images']): ProductImageItem[] {
   if (!Array.isArray(raw)) return [];
@@ -96,7 +107,9 @@ export default function AdminProductsPage() {
     setForm({
       name: p.name || '',
       sku: p.sku || '',
+      compare_price: p.compare_price != null ? String(p.compare_price) : '',
       price: String(p.price ?? ''),
+      compare_price_inr: p.compare_price_inr != null ? String(p.compare_price_inr) : '',
       price_inr: p.price_inr != null ? String(p.price_inr) : '',
       stock_quantity: String(p.stock_quantity ?? 0),
       short_description: p.short_description || '',
@@ -115,7 +128,9 @@ export default function AdminProductsPage() {
       setForm({
         name: full.name || '',
         sku: full.sku || '',
+        compare_price: full.compare_price != null ? String(full.compare_price) : '',
         price: String(full.price ?? ''),
+        compare_price_inr: full.compare_price_inr != null ? String(full.compare_price_inr) : '',
         price_inr: full.price_inr != null ? String(full.price_inr) : '',
         stock_quantity: String(full.stock_quantity ?? 0),
         short_description: full.short_description || '',
@@ -133,7 +148,9 @@ export default function AdminProductsPage() {
   const payload = () => ({
     name: form.name.trim(),
     sku: form.sku.trim(),
+    compare_price: form.compare_price === '' ? null : Number(form.compare_price) || 0,
     price: Number(form.price) || 0,
+    compare_price_inr: form.compare_price_inr === '' ? null : Number(form.compare_price_inr) || 0,
     price_inr: form.price_inr === '' ? null : Number(form.price_inr) || 0,
     stock_quantity: Number(form.stock_quantity) || 0,
     short_description: form.short_description,
@@ -147,6 +164,9 @@ export default function AdminProductsPage() {
       is_primary: img.is_primary ? 1 : 0,
     })),
   });
+
+  const usdDiscount = calcDiscount(form.compare_price, form.price);
+  const inrDiscount = calcDiscount(form.compare_price_inr, form.price_inr);
 
   const saveMutation = useMutation({
     mutationFn: () =>
@@ -455,27 +475,66 @@ export default function AdminProductsPage() {
                 </AdminField>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <AdminField label="Price (USD)">
-                  <input
-                    className={ADMIN_INPUT}
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    value={form.price}
-                    onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  />
-                </AdminField>
-                <AdminField label="Price (INR)">
-                  <input
-                    className={ADMIN_INPUT}
-                    type="number"
-                    step="0.01"
-                    min={0}
-                    value={form.price_inr}
-                    onChange={(e) => setForm({ ...form, price_inr: e.target.value })}
-                  />
-                </AdminField>
+              <div className="space-y-3 border border-[#e8e0d5] bg-[#faf8f5] p-4">
+                <p className="text-[11px] uppercase tracking-wider text-[#9c8b7a] font-medium">USD Pricing</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <AdminField label="MRP (USD)">
+                    <input
+                      className={ADMIN_INPUT}
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      value={form.compare_price}
+                      onChange={(e) => setForm({ ...form, compare_price: e.target.value })}
+                      placeholder="Original / MRP"
+                    />
+                  </AdminField>
+                  <AdminField label="Selling Price (USD)">
+                    <input
+                      className={ADMIN_INPUT}
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      value={form.price}
+                      onChange={(e) => setForm({ ...form, price: e.target.value })}
+                      placeholder="Customer pays"
+                    />
+                  </AdminField>
+                </div>
+                {usdDiscount > 0 && (
+                  <p className="text-sm text-[#8a6a2f]">Discount: <strong>{usdDiscount}% off</strong></p>
+                )}
+              </div>
+
+              <div className="space-y-3 border border-[#e8e0d5] bg-[#faf8f5] p-4">
+                <p className="text-[11px] uppercase tracking-wider text-[#9c8b7a] font-medium">INR Pricing</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <AdminField label="MRP (INR)">
+                    <input
+                      className={ADMIN_INPUT}
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      value={form.compare_price_inr}
+                      onChange={(e) => setForm({ ...form, compare_price_inr: e.target.value })}
+                      placeholder="Original / MRP"
+                    />
+                  </AdminField>
+                  <AdminField label="Selling Price (INR)">
+                    <input
+                      className={ADMIN_INPUT}
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      value={form.price_inr}
+                      onChange={(e) => setForm({ ...form, price_inr: e.target.value })}
+                      placeholder="Customer pays"
+                    />
+                  </AdminField>
+                </div>
+                {inrDiscount > 0 && (
+                  <p className="text-sm text-[#8a6a2f]">Discount: <strong>{inrDiscount}% off</strong></p>
+                )}
               </div>
 
               <AdminField label="Short description">

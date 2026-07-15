@@ -100,6 +100,11 @@ export const authApi = {
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
   resetPassword: (data: Record<string, string>) => api.post('/auth/reset-password', data),
   updateProfile: (data: Record<string, string>) => api.put('/auth/profile', data),
+  uploadAvatar: (file: File) => {
+    const fd = new FormData();
+    fd.append('avatar', file);
+    return api.post('/auth/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
   changePassword: (data: Record<string, string>) => api.post('/auth/change-password', data),
 };
 

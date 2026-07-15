@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, ExternalLink, Loader2, Package } from 'lucide-react';
-import { orderApi } from '@/lib/api';
+import { orderApi, resolveMediaUrl } from '@/lib/api';
 import { formatInr, formatUsd } from '@/lib/currency';
 import { ORDER_STATUS_STEPS, orderStatusClass, orderStatusLabel, paymentStatusClass } from '@/lib/orderStatus';
 import { cn, formatDate } from '@/lib/utils';
@@ -39,6 +39,11 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
         <span className={`text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border ${paymentStatusClass(order.payment_status)}`}>
           Payment: {orderStatusLabel(order.payment_status)}
         </span>
+        {order.payment_method && (
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.1em] px-2.5 py-1 border border-sand/40 bg-white text-stone">
+            {order.payment_method}
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
@@ -55,12 +60,17 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
         ))}
       </div>
 
-      {order.tracking_number && (
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <span className="text-stone">Tracking:</span>
-          <span className="font-medium">{order.tracking_number}</span>
+      {(order.tracking_number || order.courier_name) && (
+        <div className="bg-white border border-sand/30 p-4 text-sm space-y-1">
+          <p className="text-xs uppercase tracking-[0.14em] text-stone mb-2">Courier Tracking</p>
+          {order.courier_name && (
+            <p><span className="text-stone">Courier:</span> <span className="font-medium">{order.courier_name}</span></p>
+          )}
+          {order.tracking_number && (
+            <p><span className="text-stone">AWB / Tracking No.:</span> <span className="font-medium break-all">{order.tracking_number}</span></p>
+          )}
           {order.tracking_url && (
-            <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-gold-dark hover:underline inline-flex items-center gap-1">
+            <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-gold-dark hover:underline inline-flex items-center gap-1 mt-1">
               Track shipment <ExternalLink size={14} />
             </a>
           )}
@@ -69,18 +79,35 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
 
       {order.items && order.items.length > 0 && (
         <div>
-          <h4 className="text-xs uppercase tracking-[0.14em] text-stone mb-3">Items</h4>
+          <h4 className="text-xs uppercase tracking-[0.14em] text-stone mb-3">Items Ordered</h4>
           <div className="space-y-3">
-            {order.items.map((item) => (
-              <div key={item.id} className="flex justify-between gap-3 text-sm bg-white border border-sand/30 p-3 sm:p-4">
-                <div className="min-w-0">
-                  <p className="font-medium text-charcoal text-sm line-clamp-2">{item.product_name}</p>
-                  {item.variant_name && <p className="text-stone text-xs mt-1">Size: {item.variant_name}</p>}
-                  <p className="text-stone text-xs mt-1">Qty: {item.quantity}</p>
+            {order.items.map((item) => {
+              const img = item.product_image ? resolveMediaUrl(item.product_image) : null;
+              return (
+                <div key={item.id} className="flex gap-3 sm:gap-4 text-sm bg-white border border-sand/30 p-3 sm:p-4">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-ivory border border-sand/30 overflow-hidden">
+                    {img ? (
+                      <img src={img} alt={item.product_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package size={18} className="text-sand" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-charcoal text-sm line-clamp-2">{item.product_name}</p>
+                    <p className="text-stone text-xs mt-1">SKU: {item.product_sku}</p>
+                    {item.variant_name && <p className="text-stone text-xs mt-0.5">Size: {item.variant_name}</p>}
+                    <p className="text-stone text-xs mt-1">
+                      Qty: {item.quantity} × {formatOrderTotal(item.unit_price, order.currency)}
+                    </p>
+                  </div>
+                  <p className="font-medium shrink-0 text-sm self-start">
+                    {formatOrderTotal(item.total_price, order.currency)}
+                  </p>
                 </div>
-                <p className="font-medium shrink-0 text-sm">{formatOrderTotal(item.total_price, order.currency)}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -95,6 +122,7 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
               {order.shipping_address.address_line2 && <>{order.shipping_address.address_line2}<br /></>}
               {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code}<br />
               {order.shipping_address.country}
+              {order.shipping_address.phone && <><br />Phone: {order.shipping_address.phone}</>}
             </address>
           </div>
           <div>
@@ -111,6 +139,13 @@ function OrderDetailPanel({ orderNumber }: { orderNumber: string }) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {order.notes && (
+        <div>
+          <h4 className="text-xs uppercase tracking-[0.14em] text-stone mb-2">Order Notes</h4>
+          <p className="text-sm text-charcoal whitespace-pre-wrap">{order.notes}</p>
         </div>
       )}
 

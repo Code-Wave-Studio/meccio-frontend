@@ -168,9 +168,21 @@ export default function Navbar({ onSearchOpen }: { onSearchOpen: () => void }) {
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 z-[60] bg-cream xl:hidden pt-28 px-6 overflow-y-auto"
+            className="fixed inset-0 z-[60] bg-cream xl:hidden overflow-y-auto"
           >
-            <nav className="flex flex-col gap-1 pb-8">
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-sand/40">
+              <p className="text-xs uppercase tracking-[0.14em] text-stone">Menu</p>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="nav-link inline-flex items-center gap-2 px-3 py-2 border border-sand/50 text-charcoal hover:border-charcoal transition-colors"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+                <span className="text-[11px] uppercase tracking-[0.12em]">Close</span>
+              </button>
+            </div>
+            <nav className="flex flex-col gap-1 px-6 pt-4 pb-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}

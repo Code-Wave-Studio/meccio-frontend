@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { ArrowRight, Loader2, Lock, Mail, Phone, ShieldCheck } from 'lucide-react';
+import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
+import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, Phone, ShieldCheck } from 'lucide-react';
 import SEO from '@/components/SEO';
 import OtpInput from '@/components/OtpInput';
 import { AuthLayout, FieldLabel, getApiError, useOtpCooldown } from '@/components/AuthLayout';
@@ -30,6 +30,40 @@ interface RegisterForm {
   password: string;
   password_confirmation: string;
   otp: string;
+}
+
+function PasswordField({
+  registration,
+  placeholder,
+  autoComplete,
+  withLock = false,
+}: {
+  registration: UseFormRegisterReturn;
+  placeholder: string;
+  autoComplete?: string;
+  withLock?: boolean;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      {withLock && <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone" />}
+      <input
+        {...registration}
+        type={show ? 'text' : 'password'}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        className={`input-luxury ${withLock ? 'pl-11' : ''} pr-12`}
+      />
+      <button
+        type="button"
+        onClick={() => setShow((v) => !v)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-stone hover:text-charcoal transition-colors"
+        aria-label={show ? 'Hide password' : 'Show password'}
+      >
+        {show ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
+  );
 }
 
 function useAuthRedirect() {
@@ -175,16 +209,12 @@ export default function LoginPage() {
             </div>
             <div>
               <FieldLabel required>Password</FieldLabel>
-              <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone" />
-                <input
-                  {...passwordForm.register('password', { required: true })}
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Your password"
-                  className="input-luxury pl-11"
-                />
-              </div>
+              <PasswordField
+                registration={passwordForm.register('password', { required: true })}
+                placeholder="Your password"
+                autoComplete="current-password"
+                withLock
+              />
             </div>
             <div className="text-right">
               <Link to="/forgot-password" className="text-sm text-stone hover:text-gold-dark transition-colors">
@@ -432,23 +462,21 @@ export function RegisterPage() {
 
           <div>
             <FieldLabel required>Password</FieldLabel>
-            <input
-              {...register('password', { required: true, minLength: 8 })}
-              type="password"
+            <PasswordField
+              registration={register('password', { required: true, minLength: 8 })}
               placeholder="Min. 8 characters"
-              className="input-luxury"
+              autoComplete="new-password"
             />
           </div>
           <div>
             <FieldLabel required>Confirm Password</FieldLabel>
-            <input
-              {...register('password_confirmation', {
+            <PasswordField
+              registration={register('password_confirmation', {
                 required: 'Please confirm your password',
                 validate: (value) => value === watch('password') || 'Passwords do not match',
               })}
-              type="password"
               placeholder="Repeat password"
-              className="input-luxury"
+              autoComplete="new-password"
             />
           </div>
 
@@ -548,36 +576,28 @@ export function ForgotPasswordPage() {
             <form onSubmit={handleSubmitReset(onResetSubmit)} className="space-y-5">
               <div>
                 <FieldLabel required>New Password</FieldLabel>
-                <div className="relative">
-                  <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone" />
-                  <input
-                    {...registerReset('password', {
-                      required: 'Enter a new password',
-                      minLength: { value: 8, message: 'Min. 8 characters' },
-                    })}
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="New password"
-                    className="input-luxury pl-11"
-                  />
-                </div>
+                <PasswordField
+                  registration={registerReset('password', {
+                    required: 'Enter a new password',
+                    minLength: { value: 8, message: 'Min. 8 characters' },
+                  })}
+                  placeholder="New password"
+                  autoComplete="new-password"
+                  withLock
+                />
                 {resetErrors.password && <p className="text-xs text-red-600 mt-1">{resetErrors.password.message}</p>}
               </div>
               <div>
                 <FieldLabel required>Confirm Password</FieldLabel>
-                <div className="relative">
-                  <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone" />
-                  <input
-                    {...registerReset('password_confirmation', {
-                      required: 'Confirm your new password',
-                      validate: (value) => value === watchReset('password') || 'Passwords do not match',
-                    })}
-                    type="password"
-                    autoComplete="new-password"
-                    placeholder="Repeat new password"
-                    className="input-luxury pl-11"
-                  />
-                </div>
+                <PasswordField
+                  registration={registerReset('password_confirmation', {
+                    required: 'Confirm your new password',
+                    validate: (value) => value === watchReset('password') || 'Passwords do not match',
+                  })}
+                  placeholder="Repeat new password"
+                  autoComplete="new-password"
+                  withLock
+                />
                 {resetErrors.password_confirmation && <p className="text-xs text-red-600 mt-1">{resetErrors.password_confirmation.message}</p>}
               </div>
               <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">

@@ -110,6 +110,7 @@ export interface Order {
   order_number: string;
   status: string;
   payment_status: string;
+  payment_method?: string;
   subtotal: number;
   discount_amount: number;
   tax_amount: number;
@@ -118,6 +119,8 @@ export interface Order {
   currency: string;
   tracking_number?: string;
   tracking_url?: string;
+  courier_name?: string;
+  notes?: string;
   created_at: string;
   items?: OrderItem[];
   shipping_address?: Address;
@@ -132,6 +135,7 @@ export interface OrderItem {
   quantity: number;
   unit_price: number;
   total_price: number;
+  product_image?: string | null;
 }
 
 export interface Address {

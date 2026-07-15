@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   User,
 } from 'lucide-react';
+import { resolveMediaUrl } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import type { User as AuthUser } from '@/types';
 
@@ -30,6 +31,25 @@ interface DashboardShellProps {
   children: ReactNode;
 }
 
+function AvatarBubble({ user, className, textClass }: { user: AuthUser; className: string; textClass: string }) {
+  const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+  const avatarUrl = user.avatar ? resolveMediaUrl(user.avatar) : null;
+  if (avatarUrl) {
+    return (
+      <img
+        src={avatarUrl}
+        alt={`${user.first_name} ${user.last_name}`}
+        className={`${className} rounded-full object-cover border border-sand/40 shrink-0`}
+      />
+    );
+  }
+  return (
+    <div className={`${className} rounded-full bg-charcoal text-gold flex items-center justify-center font-display ${textClass} shrink-0`}>
+      {initials}
+    </div>
+  );
+}
+
 export default function DashboardShell({
   user,
   activeTab,
@@ -37,8 +57,6 @@ export default function DashboardShell({
   onLogout,
   children,
 }: DashboardShellProps) {
-  const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
-
   return (
     <div className="pb-24 lg:pb-0">
       <div className="container-luxury py-6 sm:py-8 md:py-10">
@@ -53,9 +71,7 @@ export default function DashboardShell({
               <p className="text-stone text-xs sm:text-sm mt-1.5 sm:mt-2 truncate">{user.email}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-charcoal text-gold flex items-center justify-center font-display text-xs sm:text-sm tracking-wide">
-                {initials}
-              </div>
+              <AvatarBubble user={user} className="w-10 h-10 sm:w-11 sm:h-11" textClass="text-xs sm:text-sm tracking-wide" />
               <button
                 type="button"
                 onClick={onLogout}
@@ -96,9 +112,7 @@ export default function DashboardShell({
           <aside className="hidden lg:block space-y-4">
             <div className="bg-white border border-sand/40 p-5 sticky top-28">
               <div className="flex items-center gap-3 mb-6 pb-5 border-b border-sand/40">
-                <div className="w-12 h-12 rounded-full bg-charcoal text-gold flex items-center justify-center font-display text-base shrink-0">
-                  {initials}
-                </div>
+                <AvatarBubble user={user} className="w-12 h-12" textClass="text-base" />
                 <div className="min-w-0">
                   <p className="font-medium text-charcoal truncate text-sm">
                     {user.first_name} {user.last_name}

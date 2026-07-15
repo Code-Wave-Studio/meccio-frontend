@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -22,12 +22,15 @@ import {
 } from 'lucide-react';
 import SEO, { ProductSchema, BreadcrumbSchema } from '@/components/SEO';
 import ProductCard from '@/components/ProductCard';
-import { productApi } from '@/lib/api';
+import { productApi, reviewApi } from '@/lib/api';
 import { cn, getDiscountPercent, parseAmount } from '@/lib/utils';
 import type { Product, ProductImage, ProductVariant, Review } from '@/types';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import { parseSettingJson, useSiteSettings } from '@/hooks/useSiteSettings';
+import toast from 'react-hot-toast';
+import { getApiError } from '@/components/AuthLayout';
 
 const productBadgeIconMap = {
   award: Award,
@@ -47,11 +50,18 @@ const defaultProductTrustBadges = [
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<number | undefined>();
   const [zoomOpen, setZoomOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [reviewContent, setReviewContent] = useState('');
+  const [reviewName, setReviewName] = useState('');
+  const [reviewEmail, setReviewEmail] = useState('');
   const { addToCart, addToWishlist, isLoading: isCartLoading } = useCart();
+  const { user } = useAuth();
   const { formatProductPrice, isIndia } = useCurrency();
   const { data: settings = {} } = useSiteSettings();
 
@@ -59,6 +69,26 @@ export default function ProductPage() {
     queryKey: ['product', slug],
     queryFn: () => productApi.get(slug!).then((r) => r.data.data),
     enabled: !!slug,
+  });
+
+  const reviewMutation = useMutation({
+    mutationFn: () =>
+      reviewApi.create({
+        product_id: product!.id,
+        rating: reviewRating,
+        title: reviewTitle.trim(),
+        content: reviewContent.trim(),
+        author_name: user ? undefined : reviewName.trim(),
+        author_email: user ? undefined : reviewEmail.trim(),
+      }),
+    onSuccess: () => {
+      toast.success('Review submitted — pending approval');
+      setReviewTitle('');
+      setReviewContent('');
+      setReviewRating(5);
+      queryClient.invalidateQueries({ queryKey: ['product', slug] });
+    },
+    onError: (err) => toast.error(getApiError(err, 'Could not submit review')),
   });
 
   useEffect(() => {
@@ -484,20 +514,22 @@ export default function ProductPage() {
           )}
         </section>
 
-        {product.reviews && product.reviews.length > 0 && (
-          <section className="mt-16 md:mt-24">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-              <div>
-                <p className="luxury-subheading mb-2">Customer Notes</p>
-                <h2 className="font-display text-3xl text-charcoal">Reviews</h2>
-              </div>
+        <section className="mt-16 md:mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <p className="luxury-subheading mb-2">Customer Notes</p>
+              <h2 className="font-display text-3xl text-charcoal">Reviews</h2>
+            </div>
+            {product.rating_count > 0 && (
               <div className="flex items-center gap-2 text-sm text-stone">
                 <Star size={16} className="fill-gold text-gold" />
                 {product.rating_avg} average from {product.rating_count} reviews
               </div>
-            </div>
+            )}
+          </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+          {product.reviews && product.reviews.length > 0 ? (
+            <div className="grid md:grid-cols-2 gap-4 mb-10">
               {product.reviews.map((review: Review) => (
                 <article key={review.id} className="bg-white border border-sand/40 p-5 md:p-6">
                   <div className="flex items-start justify-between gap-4 mb-4">
@@ -518,8 +550,95 @@ export default function ProductPage() {
                 </article>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <p className="text-sm text-stone mb-8">No reviews yet — be the first to share your experience.</p>
+          )}
+
+          <div className="bg-white border border-sand/40 p-5 md:p-8 max-w-2xl">
+            <h3 className="font-display text-xl md:text-2xl text-charcoal mb-2">Write a Review</h3>
+            <p className="text-sm text-stone mb-6">Your review will appear after admin approval.</p>
+
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (reviewContent.trim().length < 10) {
+                  toast.error('Please write at least 10 characters');
+                  return;
+                }
+                if (!user && !reviewName.trim()) {
+                  toast.error('Please enter your name');
+                  return;
+                }
+                reviewMutation.mutate();
+              }}
+            >
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-stone mb-2">Rating</p>
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const value = i + 1;
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setReviewRating(value)}
+                        className="p-1"
+                        aria-label={`${value} stars`}
+                      >
+                        <Star
+                          size={22}
+                          className={value <= reviewRating ? 'fill-gold text-gold' : 'text-sand'}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {!user && (
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <input
+                    value={reviewName}
+                    onChange={(e) => setReviewName(e.target.value)}
+                    placeholder="Your name *"
+                    className="input-luxury"
+                    required
+                  />
+                  <input
+                    value={reviewEmail}
+                    onChange={(e) => setReviewEmail(e.target.value)}
+                    type="email"
+                    placeholder="Email (optional)"
+                    className="input-luxury"
+                  />
+                </div>
+              )}
+
+              <input
+                value={reviewTitle}
+                onChange={(e) => setReviewTitle(e.target.value)}
+                placeholder="Review title (optional)"
+                className="input-luxury"
+              />
+              <textarea
+                value={reviewContent}
+                onChange={(e) => setReviewContent(e.target.value)}
+                rows={4}
+                placeholder="Share your experience with this rug (min. 10 characters) *"
+                className="input-luxury resize-none"
+                required
+              />
+              <button
+                type="submit"
+                disabled={reviewMutation.isPending}
+                className="btn-primary disabled:opacity-60"
+              >
+                {reviewMutation.isPending ? 'Submitting...' : 'Submit Review'}
+              </button>
+            </form>
+          </div>
+        </section>
 
         {product.related && product.related.length > 0 && (
           <section className="mt-16 md:mt-24">

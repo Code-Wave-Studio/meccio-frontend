@@ -125,7 +125,7 @@ export default function AdminOrdersPage() {
               key={s}
               type="button"
               onClick={() => setStatus(s)}
-              className={`shrink-0 px-3 py-2 text-[11px] uppercase tracking-wider border capitalize ${status === s ? 'bg-[#1a1714] text-white border-[#1a1714]' : 'bg-white border-[#e8e0d5]'}`}
+              className={`shrink-0 px-3 py-2 text-[11px] uppercase tracking-wider border ${status === s ? 'bg-[#1a1714] text-white border-[#1a1714]' : 'bg-white border-[#e8e0d5]'}`}
             >
               {s}
             </button>
@@ -213,7 +213,7 @@ export default function AdminOrdersPage() {
                         <td className="px-4 py-3 font-medium">{money(o.total, o.currency)}</td>
                         <td className="px-4 py-3 capitalize text-xs">{o.payment_status}</td>
                         <td className="px-4 py-3">
-                          <span className="inline-block px-2 py-1 text-[10px] uppercase tracking-wider bg-[#f5f0eb] capitalize">
+                          <span className="inline-block px-2 py-1 text-[10px] uppercase tracking-wider bg-[#f5f0eb]">
                             {o.status}
                           </span>
                         </td>
@@ -351,17 +351,40 @@ export default function AdminOrdersPage() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase tracking-wider text-[#9c8b7a] mb-2">Tracking #</label>
+                <label className="block text-[11px] uppercase tracking-wider text-[#9c8b7a] mb-2">Courier / Delivery Company</label>
+                <input
+                  className="w-full border border-[#e8e0d5] px-3 py-2.5 text-sm mb-3"
+                  defaultValue={detail.courier_name || ''}
+                  placeholder="e.g. BlueDart, FedEx, Delhivery"
+                  onBlur={(e) => {
+                    const val = e.target.value.trim();
+                    if (val !== (detail.courier_name || '')) {
+                      updateMutation.mutate({
+                        id: detail.id,
+                        data: {
+                          status: detail.status,
+                          courier_name: val,
+                        },
+                      });
+                    }
+                  }}
+                />
+                <label className="block text-[11px] uppercase tracking-wider text-[#9c8b7a] mb-2">Courier Tracking / AWB #</label>
                 <input
                   className="w-full border border-[#e8e0d5] px-3 py-2.5 text-sm"
                   defaultValue={detail.tracking_number || ''}
-                  placeholder="Tracking number"
+                  placeholder="Delivery company tracking number"
                   onBlur={(e) => {
                     const val = e.target.value.trim();
                     if (val && val !== (detail.tracking_number || '')) {
                       updateMutation.mutate({
                         id: detail.id,
-                        data: { status: 'shipped', tracking_number: val, tracking_url: detail.tracking_url || '' },
+                        data: {
+                          status: 'shipped',
+                          tracking_number: val,
+                          tracking_url: detail.tracking_url || '',
+                          courier_name: detail.courier_name || '',
+                        },
                       });
                     }
                   }}

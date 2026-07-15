@@ -143,7 +143,7 @@ export default function OrderTrackingPage() {
                 <h2 className="font-display text-xl sm:text-2xl md:text-3xl text-charcoal break-all">{order.order_number}</h2>
                 <p className="text-xs sm:text-sm text-stone mt-2">Placed {formatDate(order.created_at)}</p>
               </div>
-              <span className="inline-flex self-start px-3 sm:px-4 py-2 bg-ivory border border-sand/40 text-[10px] sm:text-xs uppercase tracking-[0.12em] capitalize text-charcoal">
+              <span className="inline-flex self-start px-3 sm:px-4 py-2 bg-ivory border border-sand/40 text-[10px] sm:text-xs uppercase tracking-[0.12em] text-charcoal">
                 {order.status}
               </span>
             </div>
@@ -178,23 +178,41 @@ export default function OrderTrackingPage() {
                 <p className="text-[10px] sm:text-xs uppercase tracking-[0.12em] text-stone mb-1">Payment</p>
                 <p className="text-sm font-medium capitalize text-charcoal">{order.payment_status}</p>
               </div>
-              {order.tracking_number && (
-                <div className="p-3.5 sm:p-4 bg-ivory border border-sand/30">
-                  <p className="text-[10px] sm:text-xs uppercase tracking-[0.12em] text-stone mb-1">Tracking</p>
-                  <p className="text-sm font-medium text-charcoal break-all">{order.tracking_number}</p>
-                  {order.tracking_url && (
-                    <a
-                      href={order.tracking_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-gold-dark hover:underline mt-2"
-                    >
-                      Track shipment <ExternalLink size={12} />
-                    </a>
+              {(order.tracking_number || order.courier_name) && (
+                <div className="p-3.5 sm:p-4 bg-ivory border border-sand/30 sm:col-span-1">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-[0.12em] text-stone mb-1">
+                    Courier Tracking
+                  </p>
+                  {order.courier_name && (
+                    <p className="text-xs text-stone mb-1">Courier: <span className="text-charcoal font-medium">{order.courier_name}</span></p>
+                  )}
+                  {order.tracking_number ? (
+                    <>
+                      <p className="text-[10px] uppercase tracking-[0.1em] text-stone mb-0.5">Delivery AWB / Tracking No.</p>
+                      <p className="text-sm font-medium text-charcoal break-all">{order.tracking_number}</p>
+                      {order.tracking_url && (
+                        <a
+                          href={order.tracking_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-gold-dark hover:underline mt-2"
+                        >
+                          Track shipment <ExternalLink size={12} />
+                        </a>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-stone">Tracking number will appear once assigned.</p>
                   )}
                 </div>
               )}
             </div>
+
+            {!order.tracking_number && order.status === 'shipped' && (
+              <p className="text-xs sm:text-sm text-stone mt-4">
+                Your order is shipped. Courier tracking details will show here once the admin adds them.
+              </p>
+            )}
 
             {order.shipped_at && (
               <p className="text-xs sm:text-sm text-stone mt-4">Shipped on {formatDate(order.shipped_at)}</p>

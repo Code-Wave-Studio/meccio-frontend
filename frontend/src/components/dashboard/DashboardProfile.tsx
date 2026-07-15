@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { KeyRound, Loader2, Lock, Mail, Phone, Shield, User } from 'lucide-react';
-import { authApi } from '@/lib/api';
+import { Camera, KeyRound, Loader2, Lock, Mail, Phone, Shield, User } from 'lucide-react';
+import { authApi, resolveMediaUrl } from '@/lib/api';
 import { getApiError } from '@/components/AuthLayout';
 import { useAuth } from '@/context/AuthContext';
 import type { User as AuthUser } from '@/types';
@@ -23,6 +23,8 @@ export default function DashboardProfile() {
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [pwLoading, setPwLoading] = useState(false);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
     defaultValues: {
@@ -42,6 +44,9 @@ export default function DashboardProfile() {
 
   if (!user) return null;
 
+  const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+  const avatarUrl = user.avatar ? resolveMediaUrl(user.avatar) : null;
+
   const onSubmit = async (data: ProfileForm) => {
     setLoading(true);
     try {
@@ -52,6 +57,26 @@ export default function DashboardProfile() {
       toast.error(getApiError(err, 'Could not update profile'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    setAvatarLoading(true);
+    try {
+      const res = await authApi.uploadAvatar(file);
+      updateUser(res.data.data as AuthUser);
+      toast.success('Photo updated');
+    } catch (err) {
+      toast.error(getApiError(err, 'Could not upload photo'));
+    } finally {
+      setAvatarLoading(false);
+      if (fileRef.current) fileRef.current.value = '';
     }
   };
 
@@ -73,6 +98,42 @@ export default function DashboardProfile() {
       <div className="bg-white border border-sand/40 p-4 sm:p-6 md:p-8">
         <h2 className="font-display text-xl sm:text-2xl text-charcoal mb-1">Profile Settings</h2>
         <p className="text-xs sm:text-sm text-stone mb-6 sm:mb-8">Update your personal information</p>
+
+        <div className="flex items-center gap-4 mb-8">
+          <div className="relative shrink-0">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={`${user.first_name} ${user.last_name}`}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border border-sand/50"
+              />
+            ) : (
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-charcoal text-gold flex items-center justify-center font-display text-xl">
+                {initials}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={avatarLoading}
+              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gold text-espresso flex items-center justify-center border-2 border-white disabled:opacity-60"
+              aria-label="Upload profile photo"
+            >
+              {avatarLoading ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} />}
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={onAvatarChange}
+            />
+          </div>
+          <div>
+            <p className="font-medium text-charcoal text-sm sm:text-base">Profile photo</p>
+            <p className="text-xs text-stone mt-1">JPG, PNG or WEBP. Tap the camera icon to upload.</p>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-lg">
           <div className="grid sm:grid-cols-2 gap-4">
