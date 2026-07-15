@@ -12,6 +12,7 @@ import {
   Truck,
 } from 'lucide-react';
 import SupportLayout from '@/components/SupportLayout';
+import { useCart } from '@/context/CartContext';
 import { orderApi } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
 
@@ -25,6 +26,7 @@ const STATUS_STEPS = [
 
 export default function OrderTrackingPage() {
   const [searchParams] = useSearchParams();
+  const { refreshCart } = useCart();
   const success = searchParams.get('success');
   const orderParam = searchParams.get('order');
   const [order, setOrder] = useState<Record<string, string> | null>(null);
@@ -38,6 +40,13 @@ export default function OrderTrackingPage() {
   useEffect(() => {
     if (orderParam) setValue('order_number', orderParam);
   }, [orderParam, setValue]);
+
+  // After Razorpay mobile redirect, clear stale cart UI
+  useEffect(() => {
+    if (success === '1') {
+      void refreshCart();
+    }
+  }, [success, refreshCart]);
 
   const onTrack = async (data: Record<string, string>) => {
     setLoading(true);

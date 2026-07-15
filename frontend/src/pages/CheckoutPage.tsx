@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -17,7 +17,14 @@ import {
 import SEO from '@/components/SEO';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { addressApi, paymentApi } from '@/lib/api';
+import { addressApi, paymentApi, API_BASE } from '@/lib/api';
+import {
+  clearPendingCheckout,
+  isMobileCheckout,
+  loadRazorpay,
+  normalizeRazorpayContact,
+  savePendingCheckout,
+} from '@/lib/razorpay';
 import { useCurrency } from '@/context/CurrencyContext';
 import { COUNTRIES } from '@/lib/countries';
 import { cn } from '@/lib/utils';
@@ -26,7 +33,10 @@ import toast from 'react-hot-toast';
 
 declare global {
   interface Window {
-    Razorpay: new (options: Record<string, unknown>) => { open: () => void };
+    Razorpay: new (options: Record<string, unknown>) => {
+      open: () => void;
+      on: (event: string, handler: (response: Record<string, unknown>) => void) => void;
+    };
   }
 }
 
@@ -51,9 +61,19 @@ export default function CheckoutPage() {
   const { formatProductPrice, formatMoney, isIndia, currency } = useCurrency();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [couponCode, setCouponCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (searchParams.get('payment') !== 'failed') return;
+    toast.error('Payment was not completed. Please try again.');
+    const next = new URLSearchParams(searchParams);
+    next.delete('payment');
+    next.delete('reason');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<CheckoutForm>({
     defaultValues: {
@@ -123,6 +143,8 @@ export default function CheckoutPage() {
     }
 
     setLoading(true);
+    let modalOpened = false;
+
     try {
       const shippingAddress = {
         first_name: data.first_name,
@@ -150,76 +172,142 @@ export default function CheckoutPage() {
         amount,
         currency: payCurrency,
         key_id,
-      } = paymentRes.data.data;
+      } = paymentRes.data.data as {
+        checkout_token: string;
+        razorpay_order_id: string;
+        amount: number;
+        currency: string;
+        key_id: string;
+      };
 
-      if (typeof window.Razorpay !== 'undefined') {
-        const siteBase = (
-          import.meta.env.VITE_SITE_URL || window.location.origin
-        ).replace(/\/$/, '');
-        const brandLogo = `${window.location.origin}/icon.png`;
-
-        const rzp = new window.Razorpay({
-          key: key_id,
-          amount,
-          currency: payCurrency,
-          name: 'MECCIO',
-          description: 'Luxury Carpets & Rugs · Secure checkout',
-          image: brandLogo,
-          order_id: razorpay_order_id,
-          handler: async (response: Record<string, string>) => {
-            try {
-              const verifyRes = await paymentApi.verify({
-                checkout_token,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-              });
-              const orderNumber = verifyRes.data?.data?.order_number as string;
-              await refreshCart();
-              toast.success('Payment successful — order confirmed');
-              navigate(`/order-tracking?order=${orderNumber}&success=1`);
-            } catch {
-              toast.error('Payment received but confirmation failed. Contact support with your payment ID.');
-            }
-          },
-          modal: {
-            ondismiss: () => {
-              void paymentApi.cancel(checkout_token).catch(() => undefined);
-              toast('Payment cancelled — no order was created');
-              setLoading(false);
-            },
-          },
-          prefill: {
-            name: `${data.first_name} ${data.last_name}`,
-            email: data.email,
-            contact: data.phone,
-          },
-          notes: {
-            company: 'MECCIO',
-            website: siteBase,
-            checkout_token,
-          },
-          theme: {
-            color: '#C4A962',
-          },
-        });
-        rzp.open();
-      } else {
-        const verifyRes = await paymentApi.verify({
-          checkout_token,
-          razorpay_payment_id: 'demo_payment',
-          razorpay_order_id,
-          razorpay_signature: 'demo_sig',
-        });
-        const orderNumber = verifyRes.data?.data?.order_number as string;
-        await refreshCart();
-        toast.success('Payment successful — order confirmed');
-        navigate(`/order-tracking?order=${orderNumber}&success=1`);
+      if (!checkout_token || !razorpay_order_id || !key_id) {
+        throw new Error('Invalid payment session');
       }
-    } catch {
-      toast.error('Checkout failed. Please try again.');
-    } finally {
+
+      if (String(key_id).includes('demo') || String(razorpay_order_id).startsWith('order_demo_')) {
+        toast.error('Payment gateway is not configured. Please contact support.');
+        setLoading(false);
+        return;
+      }
+
+      await loadRazorpay();
+
+      savePendingCheckout({
+        checkout_token,
+        razorpay_order_id,
+        created_at: Date.now(),
+      });
+
+      const siteBase = (
+        import.meta.env.VITE_SITE_URL || window.location.origin
+      ).replace(/\/$/, '');
+      const brandLogo = `${siteBase}/icon.png`;
+      const mobile = isMobileCheckout();
+      const callbackUrl = `${API_BASE}/payments/razorpay/callback`;
+
+      const finishSuccess = async (response: Record<string, string>) => {
+        try {
+          const verifyRes = await paymentApi.verify({
+            checkout_token,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+          clearPendingCheckout();
+          const orderNumber = verifyRes.data?.data?.order_number as string;
+          await refreshCart();
+          toast.success('Payment successful — order confirmed');
+          navigate(`/order-tracking?order=${orderNumber}&success=1`);
+        } catch {
+          toast.error(
+            'Payment received but confirmation failed. Contact support with your Razorpay payment ID.',
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const rzp = new window.Razorpay({
+        key: key_id,
+        amount,
+        currency: payCurrency,
+        name: 'MECCIO',
+        description: 'Luxury Carpets & Rugs · Secure checkout',
+        image: brandLogo,
+        order_id: razorpay_order_id,
+        // Mobile UPI apps often leave the browser — redirect callback is more reliable
+        ...(mobile
+          ? {
+              callback_url: callbackUrl,
+              redirect: true,
+            }
+          : {}),
+        handler: (response: Record<string, string>) => {
+          void finishSuccess(response);
+        },
+        modal: {
+          escape: true,
+          confirm_close: true,
+          ondismiss: () => {
+            // Do NOT cancel/delete pending checkout here.
+            // On mobile, opening GPay/PhonePe can fire dismiss incorrectly.
+            // Pending session expires server-side in 1 hour.
+            setLoading(false);
+            toast('Payment window closed. You can try again anytime.');
+          },
+        },
+        prefill: {
+          name: `${data.first_name} ${data.last_name}`.trim(),
+          email: data.email,
+          contact: normalizeRazorpayContact(data.phone),
+        },
+        notes: {
+          company: 'MECCIO',
+          website: siteBase,
+          checkout_token,
+        },
+        theme: {
+          color: '#C4A962',
+        },
+        retry: {
+          enabled: true,
+          max_count: 2,
+        },
+      });
+
+      rzp.on('payment.failed', (response: Record<string, unknown>) => {
+        const err = response?.error as { description?: string; reason?: string } | undefined;
+        toast.error(err?.description || err?.reason || 'Payment failed. Please try again.');
+        setLoading(false);
+      });
+
+      modalOpened = true;
+      rzp.open();
+
+      // Keep loading spinner while modal is open (desktop).
+      // Mobile redirect leaves the page — loading state is irrelevant.
+      if (mobile) {
+        // User is leaving to payment app / Razorpay redirect page
+        toast.loading('Opening secure payment…', { id: 'rzp-mobile', duration: 4000 });
+      }
+    } catch (err: unknown) {
+      const axiosErr = err as {
+        response?: { data?: { message?: string; error?: string } };
+        message?: string;
+      };
+      const msg =
+        axiosErr?.response?.data?.message ||
+        axiosErr?.response?.data?.error ||
+        axiosErr?.message ||
+        'Checkout failed. Please try again.';
+      toast.error(msg);
       setLoading(false);
+    } finally {
+      // Only clear loading if modal never opened (prepare/load failed).
+      // If modal opened, loading is cleared in handler / dismiss / failed.
+      if (!modalOpened) {
+        setLoading(false);
+      }
     }
   };
 
@@ -235,7 +323,6 @@ export default function CheckoutPage() {
   return (
     <>
       <SEO title="Checkout" noindex />
-      <script src="https://checkout.razorpay.com/v1/checkout.js" async />
 
       <div className="container-luxury py-6 sm:py-8 md:py-10 pb-20 sm:pb-24">
         <div className="mb-6 sm:mb-8 md:mb-10">
