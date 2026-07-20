@@ -141,8 +141,8 @@ export default function CustomRugsPage() {
     <>
       <SEO
         title="Custom Rugs"
-        description="Commission bespoke luxury rugs tailored to your exact specifications. Custom sizes, colors, and patterns by MECCIO artisans."
-        keywords="custom rugs, bespoke carpets, made to order rugs, MECCIO"
+        description="Commission bespoke luxury rugs tailored to your exact specifications. Custom sizes, colors, and patterns by MECCIO RUGS artisans."
+        keywords="custom rugs, bespoke carpets, made to order rugs, MECCIO RUGS"
       />
 
       <section className="relative min-h-[50vh] md:min-h-[55vh] flex items-end overflow-hidden">
@@ -180,7 +180,7 @@ export default function CustomRugsPage() {
           >
             <h2 className="luxury-heading text-3xl md:text-4xl mb-4">Your Vision, Our Craft</h2>
             <p className="text-stone leading-relaxed mb-10">
-              Every MECCIO custom rug is hand-knotted by master artisans using premium materials.
+              Every MECCIO RUGS custom rug is hand-knotted by master artisans using premium materials.
               Share your requirements and we&apos;ll guide you through a seamless design journey.
             </p>
 

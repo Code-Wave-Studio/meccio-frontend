@@ -201,7 +201,7 @@ export default function CheckoutPage() {
       const siteBase = (
         import.meta.env.VITE_SITE_URL || window.location.origin
       ).replace(/\/$/, '');
-      const brandLogo = `${siteBase}/icon.png`;
+      const brandLogo = `${siteBase}/logo.png`;
       const mobile = isMobileCheckout();
       const callbackUrl = `${API_BASE}/payments/razorpay/callback`;
 
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
         key: key_id,
         amount,
         currency: payCurrency,
-        name: 'MECCIO',
+        name: 'MECCIO RUGS',
         description: 'Luxury Carpets & Rugs · Secure checkout',
         image: brandLogo,
         order_id: razorpay_order_id,
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
           contact: normalizeRazorpayContact(data.phone),
         },
         notes: {
-          company: 'MECCIO',
+          company: 'MECCIO RUGS',
           website: siteBase,
           checkout_token,
         },

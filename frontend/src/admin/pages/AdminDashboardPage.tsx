@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
         <div className="min-w-0">
           <h1 className="text-2xl sm:text-3xl font-medium tracking-tight">Dashboard</h1>
           <p className="text-sm text-[#9c8b7a] mt-1 truncate">
-            Welcome back, {user?.first_name || 'Admin'} · MECCIO overview
+            Welcome back, {user?.first_name || 'Admin'} · MECCIO RUGS overview
           </p>
         </div>
         <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">

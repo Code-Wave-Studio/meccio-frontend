@@ -12,7 +12,7 @@ const DEFAULT_CRAFT = {
   eyebrow: 'Craftsmanship',
   title: 'Where Tradition Meets Innovation',
   paragraph_1:
-    "From the highlands of Tibet to the workshops of Isfahan, we partner with the world's most skilled weavers. Each MECCIO rug passes through the hands of artisans who have dedicated their lives to the craft.",
+    "From the highlands of Tibet to the workshops of Isfahan, we partner with the world's most skilled weavers. Each MECCIO RUGS rug passes through the hands of artisans who have dedicated their lives to the craft.",
   paragraph_2:
     'Our design studio in New York collaborates with interior designers, architects, and hospitality brands to create bespoke pieces that define spaces.',
 };
@@ -93,15 +93,15 @@ export default function AboutPage() {
     <>
       <SEO
         title="About Us"
-        description="Discover the MECCIO story — luxury carpets and rugs crafted by master artisans for discerning spaces worldwide."
-        keywords="about MECCIO, artisan rugs, luxury carpet brand"
+        description="Discover the MECCIO RUGS story — luxury carpets and rugs crafted by master artisans for discerning spaces worldwide."
+        keywords="about MECCIO RUGS, artisan rugs, luxury carpet brand"
       />
 
       <div className="relative h-[60vh] overflow-hidden">
-        <img src={aboutHeroImage} alt="MECCIO craftsmanship" className="w-full h-full object-cover" />
+        <img src={aboutHeroImage} alt="MECCIO RUGS craftsmanship" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-espresso/50 flex items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-            <p className="luxury-subheading text-gold-light mb-4">Est. 2018</p>
+            <p className="luxury-subheading text-gold-light mb-4">Handmade Carpets</p>
             <h1 className="font-display text-5xl md:text-7xl text-cream font-light">Our Story</h1>
           </motion.div>
         </div>
@@ -110,7 +110,7 @@ export default function AboutPage() {
       <div className="container-luxury py-24">
         <div className="max-w-3xl mx-auto text-center mb-24">
           <p className="font-display text-2xl md:text-3xl leading-relaxed text-charcoal/80 italic">
-            &ldquo;We believe every floor deserves to be a canvas. MECCIO was born from a passion for
+            &ldquo;We believe every floor deserves to be a canvas. MECCIO RUGS was born from a passion for
             preserving ancient weaving traditions while pushing the boundaries of contemporary design.&rdquo;
           </p>
         </div>
@@ -188,8 +188,8 @@ export function TestimonialsPage() {
     <>
       <SEO
         title="Testimonials"
-        description="Read what interior designers, architects, and homeowners say about MECCIO luxury rugs."
-        keywords="MECCIO reviews, luxury rug testimonials, customer stories"
+        description="Read what interior designers, architects, and homeowners say about MECCIO RUGS luxury rugs."
+        keywords="MECCIO RUGS reviews, luxury rug testimonials, customer stories"
       />
       <div className="container-luxury py-8 sm:py-12">
         <h1 className="luxury-heading text-3xl sm:text-4xl md:text-5xl mb-10 sm:mb-16 text-center">Client Stories</h1>

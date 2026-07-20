@@ -33,7 +33,7 @@ export default function ShippingPage() {
       active="shipping"
       title={meta.title ?? 'Shipping Information'}
       subtitle={meta.subtitle ?? 'Worldwide delivery with care — from our artisans to your home.'}
-      seoDescription="MECCIO worldwide shipping, delivery times, and complimentary delivery information."
+      seoDescription="MECCIO RUGS worldwide shipping, delivery times, and complimentary delivery information."
     >
       <div className="space-y-6 sm:space-y-8 md:space-y-10">
         <div className="p-4 sm:p-6 md:p-8 bg-gradient-to-r from-charcoal to-espresso text-cream">
@@ -45,7 +45,7 @@ export default function ShippingPage() {
               <p className="luxury-subheading text-gold-light mb-2">Worldwide Shipping</p>
               <p className="font-display text-xl sm:text-2xl md:text-3xl mb-2">Complimentary shipping on every order</p>
               <p className="text-cream/70 text-xs sm:text-sm leading-relaxed max-w-2xl">
-                We deliver MECCIO rugs to customers around the world with secure packaging, tracking, and white-glove care for premium pieces.
+                We deliver MECCIO RUGS rugs to customers around the world with secure packaging, tracking, and white-glove care for premium pieces.
               </p>
             </div>
           </div>

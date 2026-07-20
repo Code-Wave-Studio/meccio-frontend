@@ -201,7 +201,7 @@ export default function HomePage() {
                   The Art of Craftsmanship
                 </h2>
                 <p className="text-stone text-sm sm:text-base leading-relaxed max-w-lg">
-                  From raw fiber to finished heirloom — every MECCIO rug follows a meticulous four-stage process shaped by master artisans.
+                  From raw fiber to finished heirloom — every MECCIO RUGS rug follows a meticulous four-stage process shaped by master artisans.
                 </p>
               </div>
 

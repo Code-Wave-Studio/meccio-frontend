@@ -24,10 +24,10 @@ export function PrivacyPage() {
   return (
     <StaticPage
       title="Privacy Policy"
-      description="How MECCIO collects, uses, and protects your personal information when you shop luxury rugs online."
+      description="How MECCIO RUGS collects, uses, and protects your personal information when you shop luxury rugs online."
     >
       <p>Last updated: July 2026</p>
-      <p>MECCIO ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website or make a purchase.</p>
+      <p>MECCIO RUGS ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website or make a purchase.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Information We Collect</h2>
       <p>We collect information you provide directly, including name, email, shipping address, payment information, and order history. We also collect usage data through cookies and analytics tools.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">How We Use Your Information</h2>
@@ -44,16 +44,16 @@ export function TermsPage() {
   return (
     <StaticPage
       title="Terms of Service"
-      description="MECCIO terms of service covering orders, payments, pricing, and use of our luxury rug website."
+      description="MECCIO RUGS terms of service covering orders, payments, pricing, and use of our luxury rug website."
     >
       <p>Last updated: July 2026</p>
-      <p>By accessing and using the MECCIO website, you agree to these Terms of Service.</p>
+      <p>By accessing and using the MECCIO RUGS website, you agree to these Terms of Service.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Products & Pricing</h2>
       <p>All prices are listed in USD unless otherwise stated. We reserve the right to modify prices without notice. Product images are representative; slight variations in color and pattern may occur due to the handmade nature of our rugs.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Orders & Payment</h2>
       <p>Orders are confirmed upon successful payment. We accept payments through Razorpay and other approved payment methods.</p>
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Intellectual Property</h2>
-      <p>All content on this website, including designs, images, and text, is the property of MECCIO and protected by copyright law.</p>
+      <p>All content on this website, including designs, images, and text, is the property of MECCIO RUGS and protected by copyright law.</p>
     </StaticPage>
   );
 }
@@ -62,11 +62,11 @@ export function LicensePage() {
   return (
     <StaticPage
       title="License & Attribution"
-      description="License and attribution details for the MECCIO website designed and developed by CodeWave Studio."
+      description="License and attribution details for the MECCIO RUGS website designed and developed by CodeWave Studio."
     >
       <p>Last updated: July 2026</p>
       <p>
-        This MECCIO website was designed and developed by{' '}
+        This MECCIO RUGS website was designed and developed by{' '}
         <a
           href="https://codewavestudio.space"
           target="_blank"
@@ -84,14 +84,14 @@ export function LicensePage() {
         without written permission from CodeWave Studio:
       </p>
       <p className="border border-sand/50 bg-ivory px-4 py-3 text-sm">
-        © 2026 MECCIO. All rights reserved. Designed &amp; Developed by CodeWave Studio
+        © 2026 MECCIO RUGS. All rights reserved. Designed &amp; Developed by CodeWave Studio
       </p>
 
       <h2 className="font-display text-2xl text-charcoal mt-8 mb-4">Agency rights</h2>
       <ul className="list-disc pl-5 space-y-2">
-        <li>Client retains ownership of MECCIO brand assets, product data, and business content.</li>
+        <li>Client retains ownership of MECCIO RUGS brand assets, product data, and business content.</li>
         <li>CodeWave Studio retains authorship credit for design and development work.</li>
-        <li>Client may host and operate this codebase for the MECCIO commercial website.</li>
+        <li>Client may host and operate this codebase for the MECCIO RUGS commercial website.</li>
         <li>Redistribution as a template/SaaS product or removal of attribution is not permitted without written consent.</li>
       </ul>
 

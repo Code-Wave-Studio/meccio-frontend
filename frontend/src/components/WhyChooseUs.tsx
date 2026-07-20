@@ -114,7 +114,7 @@ export default function WhyChooseUs() {
           >
             <div className="flex items-center gap-4 mb-4 sm:mb-5">
               <span className="h-px w-10 bg-gold" />
-              <p className="luxury-subheading text-gold mb-0">The MECCIO Difference</p>
+              <p className="luxury-subheading text-gold mb-0">The MECCIO RUGS Difference</p>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-light leading-tight mb-4 sm:mb-6">
               Why Choose Us

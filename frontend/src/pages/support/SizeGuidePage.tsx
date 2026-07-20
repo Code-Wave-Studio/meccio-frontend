@@ -44,7 +44,7 @@ export default function SizeGuidePage() {
       title={meta.title ?? 'Rug Size Guide'}
       subtitle={meta.subtitle ?? 'Choose dimensions that anchor your space and complement your furniture layout.'}
       seoTitle="Size Guide"
-      seoDescription="MECCIO rug size guide — recommended dimensions for living rooms, bedrooms, dining rooms, and hallways."
+      seoDescription="MECCIO RUGS rug size guide — recommended dimensions for living rooms, bedrooms, dining rooms, and hallways."
     >
       <div className="space-y-6 sm:space-y-8 md:space-y-10">
         <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">

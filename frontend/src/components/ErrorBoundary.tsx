@@ -16,7 +16,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('MECCIO render error:', error, info);
+    console.error('MECCIO RUGS render error:', error, info);
   }
 
   render() {
@@ -24,7 +24,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-cream flex items-center justify-center p-8 text-center">
           <div>
-            <h1 className="font-display text-4xl tracking-[0.2em] mb-4">MECCIO</h1>
+            <img src="/logo.png" alt="MECCIO RUGS" className="h-20 w-20 mx-auto mb-6 rounded-full object-cover" />
             <p className="text-stone mb-6">Something went wrong. Please refresh the page.</p>
             <button
               type="button"

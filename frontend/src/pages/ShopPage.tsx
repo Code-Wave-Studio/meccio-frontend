@@ -290,14 +290,14 @@ export default function ShopPage({
       <SEO
         title={title}
         description={seoDescription || `Browse our ${title.toLowerCase()}. Premium luxury carpets and rugs handcrafted for refined interiors worldwide.`}
-        keywords={`${title}, luxury rugs, carpets, MECCIO, handcrafted`}
+        keywords={`${title}, luxury rugs, carpets, MECCIO RUGS, handcrafted`}
       />
 
       <div className="bg-gradient-to-b from-ivory via-white to-white">
         <div className="container-luxury pt-6 sm:pt-8 pb-8 sm:pb-10">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
             <div>
-              <p className="luxury-subheading mb-2">MECCIO Collection</p>
+              <p className="luxury-subheading mb-2">MECCIO RUGS Collection</p>
               <h1 className="font-display text-3xl sm:text-4xl md:text-5xl text-charcoal">{title}</h1>
               <p className="text-stone text-sm mt-3 max-w-xl">
                 Discover handcrafted rugs curated for refined interiors worldwide.

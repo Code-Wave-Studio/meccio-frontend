@@ -14,11 +14,11 @@ interface SEOProps {
   keywords?: string;
 }
 
-export const SITE_NAME = 'MECCIO';
+export const SITE_NAME = 'MECCIO RUGS';
 export const DEFAULT_DESC =
   'Luxury handcrafted carpets and rugs for discerning homes, hotels, and commercial spaces. Premium wool, silk, and Persian collections shipped worldwide.';
 export const BASE_URL = (import.meta.env.VITE_SITE_URL || 'https://meccio.com').replace(/\/$/, '');
-const DEFAULT_OG = `${BASE_URL}/icon.png`;
+const DEFAULT_OG = `${BASE_URL}/logo.png`;
 
 function absolutize(pathOrUrl: string): string {
   if (!pathOrUrl) return DEFAULT_OG;
@@ -42,15 +42,15 @@ export default function SEO({
   const path = url ?? (location.pathname === '/' ? '/' : location.pathname.replace(/\/$/, '') || '/');
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | Luxury Carpets & Rugs`;
   const canonical = path === '/' ? `${BASE_URL}/` : `${BASE_URL}${path}`;
-  const ogImage = absolutize(image || '/icon.png');
+  const ogImage = absolutize(image || '/logo.png');
 
   const orgSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
     url: BASE_URL,
-    logo: `${BASE_URL}/icon.png`,
-    image: `${BASE_URL}/icon.png`,
+    logo: `${BASE_URL}/logo.png`,
+    image: `${BASE_URL}/logo.png`,
     description: DEFAULT_DESC,
     contactPoint: {
       '@type': 'ContactPoint',
@@ -82,7 +82,7 @@ export default function SEO({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="author" content="MECCIO" />
+      <meta name="author" content="MECCIO RUGS" />
       <meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'} />
       <link rel="canonical" href={canonical} />
 
@@ -128,7 +128,7 @@ type ProductSchemaInput = {
 
 export function ProductSchema({ product }: { product: ProductSchemaInput }) {
   const inStock = (product.stock_quantity ?? 1) > 0;
-  const image = product.primary_image ? absolutize(product.primary_image) : `${BASE_URL}/icon.png`;
+  const image = product.primary_image ? absolutize(product.primary_image) : `${BASE_URL}/logo.png`;
 
   const schema = {
     '@context': 'https://schema.org',
@@ -138,7 +138,7 @@ export function ProductSchema({ product }: { product: ProductSchemaInput }) {
     sku: product.sku,
     image: [image],
     url: `${BASE_URL}/product/${product.slug}`,
-    brand: { '@type': 'Brand', name: product.brand || 'MECCIO' },
+    brand: { '@type': 'Brand', name: product.brand || 'MECCIO RUGS' },
     offers: {
       '@type': 'Offer',
       url: `${BASE_URL}/product/${product.slug}`,

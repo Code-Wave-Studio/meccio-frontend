@@ -83,7 +83,7 @@ export default function FAQPage() {
       active="faq"
       title={pageMeta.title ?? 'Frequently Asked Questions'}
       subtitle={pageMeta.subtitle ?? 'Answers about orders, materials, care, shipping, and our bespoke rug services.'}
-      seoDescription="Frequently asked questions about MECCIO luxury rugs, shipping, returns, and care."
+      seoDescription="Frequently asked questions about MECCIO RUGS luxury rugs, shipping, returns, and care."
     >
       <FaqSchema faqs={filtered.map((f) => ({ question: f.question, answer: f.answer }))} />
       <div className="space-y-6 sm:space-y-8">

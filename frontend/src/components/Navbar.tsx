@@ -74,8 +74,8 @@ export default function Navbar({ onSearchOpen }: { onSearchOpen: () => void }) {
       >
         <div className="container-luxury flex items-center justify-between gap-6">
           <Logo
-            className="min-w-[120px]"
-            imageClassName={`h-9 md:h-11 w-auto transition-all duration-300 ${scrolled ? '' : 'brightness-0 invert'}`}
+            className="shrink-0"
+            imageClassName="h-11 w-11 md:h-12 md:w-12 lg:h-14 lg:w-14"
           />
 
           <nav className="hidden xl:flex items-center justify-center gap-7 flex-1">

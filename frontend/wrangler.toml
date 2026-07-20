@@ -1,4 +1,4 @@
-# MECCIO frontend — Cloudflare Pages
+# MECCIO RUGS frontend — Cloudflare Pages
 # Build: npm run build | Output: dist | Root: frontend
 name = "meccio"
 compatibility_date = "2026-07-14"

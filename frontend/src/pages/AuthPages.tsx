@@ -158,7 +158,7 @@ export default function LoginPage() {
       <SEO title="Sign In" noindex />
       <AuthLayout
         title="Welcome Back"
-        subtitle="Sign in to your MECCIO account"
+        subtitle="Sign in to your MECCIO RUGS account"
         footer={
           <>
             Don&apos;t have an account?{' '}
@@ -357,7 +357,7 @@ export function RegisterPage() {
       <SEO title="Create Account" noindex />
       <AuthLayout
         title="Create Account"
-        subtitle="Join MECCIO for a personalized luxury experience"
+        subtitle="Join MECCIO RUGS for a personalized luxury experience"
         footer={
           <>
             Already have an account?{' '}

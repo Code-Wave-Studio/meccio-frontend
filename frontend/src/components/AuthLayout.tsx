@@ -28,7 +28,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
         <div className="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/50 to-transparent" />
 
         <div className="relative z-10">
-          <Logo imageClassName="h-10 w-auto brightness-0 invert" />
+          <Logo imageClassName="h-16 w-16 xl:h-20 xl:w-20" />
         </div>
 
         <motion.div
@@ -42,12 +42,12 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
             Timeless rugs.<br />Exceptional craft.
           </h2>
           <p className="text-cream/70 leading-relaxed max-w-md">
-            Join MECCIO to track orders, save wishlists, and commission bespoke rugs tailored to your space.
+            Join MECCIO RUGS to track orders, save wishlists, and commission bespoke rugs tailored to your space.
           </p>
         </motion.div>
 
         <p className="relative z-10 text-xs text-cream/40 uppercase tracking-[0.2em]">
-          Handcrafted worldwide since 1985
+          Handmade carpets
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
       <div className="flex items-center justify-center px-6 py-12 md:px-12 lg:px-16 bg-ivory">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 text-center">
-            <Logo className="justify-center mx-auto" imageClassName="h-10 w-auto mx-auto" />
+            <Logo className="justify-center mx-auto" imageClassName="h-16 w-16 mx-auto" />
           </div>
 
           <div className="mb-8">

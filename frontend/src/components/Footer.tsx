@@ -115,7 +115,7 @@ export default function Footer() {
       <div className="container-luxury py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           <div className="lg:col-span-2">
-            <Logo className="mb-6" imageClassName="h-10 w-auto brightness-0 invert opacity-90" />
+            <Logo className="mb-6" imageClassName="h-16 w-16" />
             <p className="text-stone/80 text-sm leading-relaxed mb-8 max-w-sm">
               {settings.footer_description || 'Crafting luxury carpets and rugs for discerning spaces worldwide. Hand-selected materials, master artisans, timeless design.'}
             </p>
@@ -174,7 +174,7 @@ export default function Footer() {
 
         <div className="border-t border-stone/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-stone/60 text-center md:text-left leading-relaxed max-w-xl">
-            © 2026 MECCIO. All rights reserved.{' '}
+            © 2026 MECCIO RUGS. All rights reserved.{' '}
             <Link to="/license" className="hover:text-cream transition-colors underline-offset-2 hover:underline">
               License
             </Link>

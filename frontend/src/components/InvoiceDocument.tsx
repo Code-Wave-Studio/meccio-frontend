@@ -109,7 +109,7 @@ export default function InvoiceDocument({ invoice, onClose, printable = true }: 
       <div className="border border-sand/40 p-6 sm:p-8 md:p-10 space-y-8">
         <div className="flex flex-col sm:flex-row sm:justify-between gap-6">
           <div>
-            <p className="font-display text-3xl tracking-wide text-charcoal">{company.name || 'MECCIO'}</p>
+            <p className="font-display text-3xl tracking-wide text-charcoal">{company.name || 'MECCIO RUGS'}</p>
             {company.legal_name && company.legal_name !== company.name && (
               <p className="text-sm text-stone mt-1">{company.legal_name}</p>
             )}

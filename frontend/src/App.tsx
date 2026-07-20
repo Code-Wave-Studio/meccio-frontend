@@ -52,7 +52,7 @@ function CollectionRoute() {
     <ShopPage
       title={title}
       defaultFilters={{ collection: slug || '' }}
-      seoDescription={`Shop the ${title} at MECCIO — handcrafted luxury carpets and rugs curated for refined interiors.`}
+      seoDescription={`Shop the ${title} at MECCIO RUGS — handcrafted luxury carpets and rugs curated for refined interiors.`}
     />
   );
 }
@@ -118,7 +118,7 @@ export default function App() {
                     <Route path="collections" element={<LazyCollections />} />
                     <Route path="collections/:slug" element={<CollectionRoute />} />
 
-                    <Route path="new-arrivals" element={<ShopPage title="New Arrivals" defaultFilters={{ is_new_arrival: '1' }} seoDescription="Discover the latest luxury rug arrivals at MECCIO." />} />
+                    <Route path="new-arrivals" element={<ShopPage title="New Arrivals" defaultFilters={{ is_new_arrival: '1' }} seoDescription="Discover the latest luxury rug arrivals at MECCIO RUGS." />} />
                     <Route path="best-sellers" element={<ShopPage title="Best Sellers" defaultFilters={{ is_best_seller: '1' }} seoDescription="Shop our most popular luxury carpets and rugs." />} />
 
                     <Route path="about" element={<LazyAbout />} />

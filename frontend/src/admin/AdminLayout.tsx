@@ -96,7 +96,7 @@ export default function AdminLayout() {
   return (
     <div className="min-h-dvh bg-[#f5f0eb] text-[#2c2825]">
       <Helmet>
-        <title>Admin | MECCIO</title>
+        <title>Admin | MECCIO RUGS</title>
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       {/* Mobile top bar */}
@@ -109,8 +109,8 @@ export default function AdminLayout() {
         >
           <Menu size={22} />
         </button>
-        <div className="text-center min-w-0">
-          <p className="font-display tracking-[0.18em] text-[#c4a962] text-sm truncate">MECCIO</p>
+        <div className="text-center min-w-0 flex flex-col items-center">
+          <img src="/logo.png" alt="" className="h-8 w-8 rounded-full object-cover mb-0.5" />
           <p className="text-[9px] uppercase tracking-[0.16em] text-[#9c8b7a]">Admin</p>
         </div>
         <button
@@ -146,9 +146,12 @@ export default function AdminLayout() {
           )}
         >
           <div className="flex items-center justify-between px-4 py-4 border-b border-[#2c2825]">
-            <div>
-              <p className="font-display tracking-[0.18em] text-[#c4a962]">MECCIO</p>
-              <p className="text-[10px] uppercase tracking-[0.14em] text-[#9c8b7a] mt-0.5">Admin Panel</p>
+            <div className="flex items-center gap-3 min-w-0">
+              <img src="/logo.png" alt="" className="h-10 w-10 rounded-full object-cover shrink-0" />
+              <div className="min-w-0">
+                <p className="font-display tracking-[0.12em] text-[#c4a962] text-sm truncate">MECCIO RUGS</p>
+                <p className="text-[10px] uppercase tracking-[0.14em] text-[#9c8b7a] mt-0.5">Admin Panel</p>
+              </div>
             </div>
             <button
               type="button"
@@ -182,10 +185,13 @@ export default function AdminLayout() {
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[260px] xl:w-[280px] bg-[#1a1714] text-[#faf8f5] flex-col z-30">
         <div className="px-6 py-6 border-b border-[#2c2825]">
-          <Link to="/admin" className="font-display text-xl tracking-[0.2em] text-[#c4a962]">
-            MECCIO
+          <Link to="/admin" className="inline-flex items-center gap-3">
+            <img src="/logo.png" alt="MECCIO RUGS" className="h-11 w-11 rounded-full object-cover" />
+            <div>
+              <p className="font-display text-sm tracking-[0.12em] text-[#c4a962]">MECCIO RUGS</p>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-[#9c8b7a] mt-0.5">Admin Panel</p>
+            </div>
           </Link>
-          <p className="text-[10px] uppercase tracking-[0.16em] text-[#9c8b7a] mt-1">Admin Panel</p>
         </div>
         {NavItems}
         <div className="p-4 border-t border-[#2c2825] space-y-1">

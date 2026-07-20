@@ -74,8 +74,8 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
 ];
 
 const DEFAULT_INVOICE = {
-  invoice_company_name: 'MECCIO',
-  invoice_legal_name: 'MECCIO',
+  invoice_company_name: 'MECCIO RUGS',
+  invoice_legal_name: 'MECCIO RUGS',
   invoice_address: '',
   invoice_city: '',
   invoice_state: '',
@@ -86,7 +86,7 @@ const DEFAULT_INVOICE = {
   invoice_gstin: '',
   invoice_pan: '',
   invoice_prefix: 'INV',
-  invoice_footer_note: 'Thank you for shopping with MECCIO. This is a computer-generated invoice.',
+  invoice_footer_note: 'Thank you for shopping with MECCIO RUGS. This is a computer-generated invoice.',
   invoice_bank_details: '',
 };
 
@@ -94,7 +94,7 @@ const DEFAULT_ABOUT_CRAFT = {
   eyebrow: 'Craftsmanship',
   title: 'Where Tradition Meets Innovation',
   paragraph_1:
-    "From the highlands of Tibet to the workshops of Isfahan, we partner with the world's most skilled weavers. Each MECCIO rug passes through the hands of artisans who have dedicated their lives to the craft.",
+    "From the highlands of Tibet to the workshops of Isfahan, we partner with the world's most skilled weavers. Each MECCIO RUGS rug passes through the hands of artisans who have dedicated their lives to the craft.",
   paragraph_2:
     'Our design studio in New York collaborates with interior designers, architects, and hospitality brands to create bespoke pieces that define spaces.',
 };
@@ -531,7 +531,7 @@ export default function AdminSettingsPage() {
               <div className="rounded border border-[#e8e0d5] bg-white px-4 py-3 text-xs text-[#5c5248] leading-relaxed">
                 <p className="uppercase tracking-wider text-[#9c8b7a] mb-1.5">Fixed copyright (not editable)</p>
                 <p>
-                  © 2026 MECCIO. All rights reserved. Designed &amp; Developed by{' '}
+                  © 2026 MECCIO RUGS. All rights reserved. Designed &amp; Developed by{' '}
                   <a href="https://codewavestudio.space" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 text-[#5c5248] hover:text-[#1a1714]">
                     CodeWave Studio
                   </a>

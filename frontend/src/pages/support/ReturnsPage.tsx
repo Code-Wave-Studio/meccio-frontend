@@ -40,9 +40,9 @@ export default function ReturnsPage() {
     <SupportLayout
       active="returns"
       title={meta.title ?? 'Returns & Refunds'}
-      subtitle={meta.subtitle ?? "We want you to love your rug. Here's how returns and refunds work at MECCIO."}
+      subtitle={meta.subtitle ?? "We want you to love your rug. Here's how returns and refunds work at MECCIO RUGS."}
       seoTitle="Returns & Refunds"
-      seoDescription="MECCIO return policy, refund process, and eligibility for luxury rug orders."
+      seoDescription="MECCIO RUGS return policy, refund process, and eligibility for luxury rug orders."
     >
       <div className="space-y-6 sm:space-y-8 md:space-y-10">
         <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">

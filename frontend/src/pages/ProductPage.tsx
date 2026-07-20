@@ -180,7 +180,7 @@ export default function ProductPage() {
         image={images[0]?.url}
         url={`/product/${product.slug}`}
         type="product"
-        keywords={`${product.name}, luxury rug, ${product.material || 'handcrafted'}, MECCIO`}
+        keywords={`${product.name}, luxury rug, ${product.material || 'handcrafted'}, MECCIO RUGS`}
       />
       <ProductSchema product={{ ...product, primary_image: images[0]?.url, stock_quantity: availableStock }} />
       <BreadcrumbSchema items={[

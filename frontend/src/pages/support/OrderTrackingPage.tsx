@@ -70,7 +70,7 @@ export default function OrderTrackingPage() {
       title="Track Your Order"
       subtitle="Enter your order number and email to see real-time status and shipping details."
       seoTitle="Order Tracking"
-      seoDescription="Track your MECCIO luxury rug order status and courier delivery details."
+      seoDescription="Track your MECCIO RUGS luxury rug order status and courier delivery details."
     >
       <div className="space-y-5 sm:space-y-8">
         {success && orderParam && (
