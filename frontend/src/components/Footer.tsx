@@ -115,7 +115,7 @@ export default function Footer() {
       <div className="container-luxury py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           <div className="lg:col-span-2">
-            <Logo className="mb-6" imageClassName="h-16 w-16" />
+            <Logo className="mb-6" imageClassName="h-14 w-14" wordmarkClassName="h-8 w-auto" />
             <p className="text-stone/80 text-sm leading-relaxed mb-8 max-w-sm">
               {settings.footer_description || 'Crafting luxury carpets and rugs for discerning spaces worldwide. Hand-selected materials, master artisans, timeless design.'}
             </p>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 72" role="img" aria-label="MECCIO RUGS">
+  <defs>
+    <linearGradient id="meccioGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8D5A3"/>
+      <stop offset="45%" stop-color="#C4A962"/>
+      <stop offset="100%" stop-color="#8B7355"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="210"
+    y="38"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', 'Cormorant Garamond', serif"
+    font-size="32"
+    font-weight="400"
+    letter-spacing="0.28em"
+    fill="url(#meccioGold)"
+  >MECCIO RUGS</text>
+  <line x1="48" y1="52" x2="372" y2="52" stroke="url(#meccioGold)" stroke-width="1.25" opacity="0.85"/>
+  <text
+    x="210"
+    y="68"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', 'Cormorant Garamond', serif"
+    font-size="9"
+    font-weight="400"
+    letter-spacing="0.42em"
+    fill="url(#meccioGold)"
+    opacity="0.9"
+  >HANDMADE CARPETS</text>
+</svg>

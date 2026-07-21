@@ -28,7 +28,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
         <div className="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/50 to-transparent" />
 
         <div className="relative z-10">
-          <Logo imageClassName="h-16 w-16 xl:h-20 xl:w-20" />
+          <Logo imageClassName="h-16 w-16 xl:h-20 xl:w-20" wordmarkClassName="h-10 xl:h-12 w-auto" />
         </div>
 
         <motion.div
@@ -55,7 +55,7 @@ export function AuthLayout({ title, subtitle, children, footer }: AuthLayoutProp
       <div className="flex items-center justify-center px-6 py-12 md:px-12 lg:px-16 bg-ivory">
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-10 text-center">
-            <Logo className="justify-center mx-auto" imageClassName="h-16 w-16 mx-auto" />
+            <Logo className="justify-center mx-auto" imageClassName="h-14 w-14 mx-auto" wordmarkClassName="h-8 w-auto" />
           </div>
 
           <div className="mb-8">

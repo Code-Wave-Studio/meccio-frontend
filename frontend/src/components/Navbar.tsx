@@ -76,6 +76,7 @@ export default function Navbar({ onSearchOpen }: { onSearchOpen: () => void }) {
           <Logo
             className="shrink-0"
             imageClassName="h-11 w-11 md:h-12 md:w-12 lg:h-14 lg:w-14"
+            wordmarkClassName="h-7 md:h-8 lg:h-9 w-auto max-w-[150px] sm:max-w-none"
           />
 
           <nav className="hidden xl:flex items-center justify-center gap-7 flex-1">
