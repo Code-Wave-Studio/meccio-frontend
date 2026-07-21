@@ -1,2 +1,7 @@
-# Cloudflare Pages SPA — all routes → index.html
-/*    /index.html   200
+# Cloudflare Pages
+# Existing static files are always served first (never rewritten).
+# Missing /assets/* hashes → real 404 (avoids SPA HTML + MIME module errors).
+# Other routes → SPA shell.
+
+/assets/*    /404.html   404
+/*           /index.html 200

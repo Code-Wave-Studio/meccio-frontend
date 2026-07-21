@@ -3,5 +3,16 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
+# Never cache the shell — always fetch latest asset hashes after deploy
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Hashed Vite chunks — safe to cache forever
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /admin/*
   X-Robots-Tag: noindex, nofollow
